@@ -5,12 +5,16 @@
 	import AppleIcon from '$lib/components/icons/AppleIcon.svelte';
 	import WindowsIcon from '$lib/components/icons/WindowsIcon.svelte';
 
+	// Import Cargo.toml as raw text to extract version (single source of truth)
+	import cargoToml from '@soyuz-docs/Cargo.toml?raw';
+
 	import type { Component } from 'svelte';
 
 	type Platform = 'linux' | 'macos' | 'windows' | 'unknown';
 
-	const VERSION = 'v0.1.1';
-	const VERSION_CLEAN = VERSION.replace('v', '');
+	// Extract version from workspace.package.version in Cargo.toml
+	const VERSION_CLEAN = cargoToml.match(/version\s*=\s*"([^"]+)"/)?.[1] ?? '0.0.0';
+	const VERSION = `v${VERSION_CLEAN}`;
 	let detectedPlatform: Platform = $state('unknown');
 
 	// Linux has two download options
