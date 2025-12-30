@@ -2,7 +2,7 @@
 	import CodeBlock from '$lib/components/CodeBlock.svelte';
 	import FeatureCard from '$lib/components/FeatureCard.svelte';
 
-	const heroCode = `// A gear in 12 lines
+	const heroCode = `// A gear in 6 lines
 let body = cylinder(0.8, 0.2);
 let tooth = box3(0.2, 0.2, 0.15)
     .translate_x(0.85);
@@ -39,24 +39,24 @@ body.union(teeth).subtract(hole)`;
 	];
 </script>
 
-<div class="page">
+<div class="pb-16">
 	<!-- Hero Section -->
-	<section class="hero">
+	<section class="py-16 pb-20 border-b-2 border-border">
 		<div class="container">
-			<div class="hero-content">
-				<div class="hero-text">
-					<p class="hero-label">Procedural 3D Asset Generation</p>
-					<h1>Create 3D models<br />with code</h1>
-					<p class="hero-description">
+			<div class="grid gap-12 items-center lg:grid-cols-2 lg:gap-16">
+				<div>
+					<p class="font-mono text-xs font-medium uppercase tracking-widest text-accent mb-4">Procedural 3D Asset Generation</p>
+					<h1 class="text-4xl md:text-5xl lg:text-6xl mb-6">Create 3D models<br />with code</h1>
+					<p class="text-lg text-text-muted max-w-[480px] mb-8">
 						Soyuz is a framework for building 3D assets using Signed Distance Fields. Write scripts,
 						preview in real-time, export production-ready meshes.
 					</p>
-					<div class="hero-actions">
+					<div class="flex gap-4 flex-wrap">
 						<a href="/docs/getting-started" class="btn btn-primary">Get Started</a>
 						<a href="/examples" class="btn">View Examples</a>
 					</div>
 				</div>
-				<div class="hero-code">
+				<div class="border-2 border-border shadow-lg">
 					<CodeBlock code={heroCode} filename="gear.rhai" />
 				</div>
 			</div>
@@ -64,39 +64,43 @@ body.union(teeth).subtract(hole)`;
 	</section>
 
 	<!-- How it Works -->
-	<section class="how-it-works">
+	<section class="py-16 bg-bg-alt border-b-2 border-border">
 		<div class="container">
-			<h2>How it works</h2>
-			<div class="steps">
-				<div class="step">
-					<div class="step-number">1</div>
-					<h3>Write a script</h3>
-					<p>
+			<h2 class="mb-12">How it works</h2>
+			<div class="flex flex-col gap-6 lg:flex-row lg:items-stretch">
+				<div class="bg-surface border-2 border-border p-6 shadow-sm lg:flex-1">
+					<div class="font-mono text-xl font-bold text-accent mb-3">1</div>
+					<h3 class="text-lg mb-2">Write a script</h3>
+					<p class="text-text-muted text-sm">
 						Use primitives like <code>sphere()</code>, <code>cube()</code>, <code>cylinder()</code> and
 						combine them with operations.
 					</p>
 				</div>
-				<div class="step-arrow"></div>
-				<div class="step">
-					<div class="step-number">2</div>
-					<h3>Preview instantly</h3>
-					<p>GPU raymarching renders your SDF in real-time. See changes as you type.</p>
+				<div class="hidden lg:flex items-center text-2xl text-border px-2">
+					<span aria-hidden="true">&#8594;</span>
 				</div>
-				<div class="step-arrow"></div>
-				<div class="step">
-					<div class="step-number">3</div>
-					<h3>Export mesh</h3>
-					<p>Marching cubes converts your SDF to a triangle mesh. Export to glTF, GLB, or OBJ.</p>
+				<div class="bg-surface border-2 border-border p-6 shadow-sm lg:flex-1">
+					<div class="font-mono text-xl font-bold text-accent mb-3">2</div>
+					<h3 class="text-lg mb-2">Preview instantly</h3>
+					<p class="text-text-muted text-sm">GPU raymarching renders your SDF in real-time. See changes as you type.</p>
+				</div>
+				<div class="hidden lg:flex items-center text-2xl text-border px-2">
+					<span aria-hidden="true">&#8594;</span>
+				</div>
+				<div class="bg-surface border-2 border-border p-6 shadow-sm lg:flex-1">
+					<div class="font-mono text-xl font-bold text-accent mb-3">3</div>
+					<h3 class="text-lg mb-2">Export mesh</h3>
+					<p class="text-text-muted text-sm">Marching cubes converts your SDF to a triangle mesh. Export to glTF, GLB, or OBJ.</p>
 				</div>
 			</div>
 		</div>
 	</section>
 
 	<!-- Features -->
-	<section class="features">
+	<section class="py-16 border-b-2 border-border">
 		<div class="container">
-			<h2>Built for procedural generation</h2>
-			<div class="features-grid">
+			<h2 class="mb-10">Built for procedural generation</h2>
+			<div class="grid gap-6 sm:grid-cols-2">
 				{#each features as feature}
 					<FeatureCard {...feature} />
 				{/each}
@@ -105,15 +109,15 @@ body.union(teeth).subtract(hole)`;
 	</section>
 
 	<!-- Code Examples -->
-	<section class="examples-preview">
+	<section class="py-16 border-b-2 border-border">
 		<div class="container">
-			<div class="examples-header">
-				<h2>From simple to complex</h2>
-				<p class="text-muted">Start with a sphere, end with a spaceship.</p>
+			<div class="mb-10">
+				<h2 class="mb-2">From simple to complex</h2>
+				<p class="text-text-muted">Start with a sphere, end with a spaceship.</p>
 			</div>
-			<div class="examples-grid">
-				<div class="example-card card">
-					<h4>Primitives</h4>
+			<div class="grid gap-6 sm:grid-cols-2">
+				<div class="card p-5">
+					<h4 class="text-sm font-semibold mb-3">Primitives</h4>
 					<CodeBlock
 						code={`sphere(0.5)
 cube(1.0)
@@ -122,8 +126,8 @@ torus(0.5, 0.15)`}
 						compact
 					/>
 				</div>
-				<div class="example-card card">
-					<h4>Boolean Operations</h4>
+				<div class="card p-5">
+					<h4 class="text-sm font-semibold mb-3">Boolean Operations</h4>
 					<CodeBlock
 						code={`// Combine shapes
 sphere(0.5).union(cube(0.6))
@@ -136,8 +140,8 @@ a.smooth_union(b, 0.1)`}
 						compact
 					/>
 				</div>
-				<div class="example-card card">
-					<h4>Transforms</h4>
+				<div class="card p-5">
+					<h4 class="text-sm font-semibold mb-3">Transforms</h4>
 					<CodeBlock
 						code={`shape.translate(1.0, 0.0, 0.0)
 shape.rotate_y(deg(45.0))
@@ -146,8 +150,8 @@ shape.mirror_x()`}
 						compact
 					/>
 				</div>
-				<div class="example-card card">
-					<h4>Modifiers</h4>
+				<div class="card p-5">
+					<h4 class="text-sm font-semibold mb-3">Modifiers</h4>
 					<CodeBlock
 						code={`// Make hollow
 sphere(0.5).shell(0.05)
@@ -161,19 +165,19 @@ column.twist(2.0)`}
 					/>
 				</div>
 			</div>
-			<div class="examples-cta">
+			<div class="mt-10 text-center">
 				<a href="/examples" class="btn">See more examples</a>
 			</div>
 		</div>
 	</section>
 
 	<!-- CTA -->
-	<section class="cta">
+	<section class="pt-16">
 		<div class="container">
-			<div class="cta-box card">
-				<h2>Ready to build?</h2>
-				<p>Soyuz is open source and free to use. Get started in minutes.</p>
-				<div class="cta-actions">
+			<div class="card text-center p-12 bg-bg-alt">
+				<h2 class="mb-3">Ready to build?</h2>
+				<p class="text-text-muted mb-8">Soyuz is open source and free to use. Get started in minutes.</p>
+				<div class="flex gap-4 justify-center flex-wrap">
 					<a href="/download" class="btn btn-primary">Download</a>
 					<a href="/docs" class="btn">Read the docs</a>
 				</div>
@@ -181,217 +185,3 @@ column.twist(2.0)`}
 		</div>
 	</section>
 </div>
-
-<style>
-	.page {
-		padding-bottom: var(--space-16);
-	}
-
-	/* Hero */
-	.hero {
-		padding: var(--space-16) 0 var(--space-20);
-		border-bottom: var(--border-width) solid var(--color-border);
-	}
-
-	.hero-content {
-		display: grid;
-		gap: var(--space-12);
-		align-items: center;
-	}
-
-	.hero-label {
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--color-accent);
-		margin-bottom: var(--space-4);
-	}
-
-	.hero h1 {
-		margin-bottom: var(--space-6);
-	}
-
-	.hero-description {
-		font-size: var(--text-lg);
-		color: var(--color-text-muted);
-		max-width: 480px;
-		margin-bottom: var(--space-8);
-	}
-
-	.hero-actions {
-		display: flex;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-	}
-
-	.hero-code {
-		border: var(--border-width) solid var(--color-border);
-		box-shadow: var(--shadow-lg);
-	}
-
-	@media (min-width: 900px) {
-		.hero-content {
-			grid-template-columns: 1fr 1fr;
-			gap: var(--space-16);
-		}
-	}
-
-	/* How it Works */
-	.how-it-works {
-		padding: var(--space-16) 0;
-		background: var(--color-bg-alt);
-		border-bottom: var(--border-width) solid var(--color-border);
-	}
-
-	.how-it-works h2 {
-		margin-bottom: var(--space-12);
-	}
-
-	.steps {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-6);
-	}
-
-	.step {
-		background: var(--color-surface);
-		border: var(--border-width) solid var(--color-border);
-		padding: var(--space-6);
-		box-shadow: var(--shadow-sm);
-	}
-
-	.step-number {
-		font-family: var(--font-mono);
-		font-size: var(--text-xl);
-		font-weight: 700;
-		color: var(--color-accent);
-		margin-bottom: var(--space-3);
-	}
-
-	.step h3 {
-		font-size: var(--text-lg);
-		margin-bottom: var(--space-2);
-	}
-
-	.step p {
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-	}
-
-	.step-arrow {
-		display: none;
-	}
-
-	@media (min-width: 900px) {
-		.steps {
-			flex-direction: row;
-			align-items: stretch;
-		}
-
-		.step {
-			flex: 1;
-		}
-
-		.step-arrow {
-			display: flex;
-			align-items: center;
-			font-size: var(--text-2xl);
-			color: var(--color-border);
-			padding: 0 var(--space-2);
-		}
-
-		.step-arrow::before {
-			content: '\2192';
-		}
-	}
-
-	/* Features */
-	.features {
-		padding: var(--space-16) 0;
-		border-bottom: var(--border-width) solid var(--color-border);
-	}
-
-	.features h2 {
-		margin-bottom: var(--space-10);
-	}
-
-	.features-grid {
-		display: grid;
-		gap: var(--space-6);
-	}
-
-	@media (min-width: 640px) {
-		.features-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	/* Examples Preview */
-	.examples-preview {
-		padding: var(--space-16) 0;
-		border-bottom: var(--border-width) solid var(--color-border);
-	}
-
-	.examples-header {
-		margin-bottom: var(--space-10);
-	}
-
-	.examples-header h2 {
-		margin-bottom: var(--space-2);
-	}
-
-	.examples-grid {
-		display: grid;
-		gap: var(--space-6);
-	}
-
-	.example-card {
-		padding: var(--space-5);
-	}
-
-	.example-card h4 {
-		font-size: var(--text-sm);
-		font-weight: 600;
-		margin-bottom: var(--space-3);
-	}
-
-	.examples-cta {
-		margin-top: var(--space-10);
-		text-align: center;
-	}
-
-	@media (min-width: 640px) {
-		.examples-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-
-	/* CTA */
-	.cta {
-		padding: var(--space-16) 0 0;
-	}
-
-	.cta-box {
-		text-align: center;
-		padding: var(--space-12);
-		background: var(--color-bg-alt);
-	}
-
-	.cta-box h2 {
-		margin-bottom: var(--space-3);
-	}
-
-	.cta-box p {
-		color: var(--color-text-muted);
-		margin-bottom: var(--space-8);
-	}
-
-	.cta-actions {
-		display: flex;
-		gap: var(--space-4);
-		justify-content: center;
-		flex-wrap: wrap;
-	}
-</style>

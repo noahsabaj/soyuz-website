@@ -104,36 +104,36 @@ outer.subtract(inner)`
 	<title>Playground - Soyuz</title>
 </svelte:head>
 
-<div class="playground">
-	<header class="playground-header">
-		<h1>Playground</h1>
-		<p>Write Rhai scripts, see live 3D preview, and inspect generated WGSL shader code.</p>
+<div class="flex flex-col gap-4 max-w-[1600px] mx-auto p-4">
+	<header class="text-center">
+		<h1 class="mb-2">Playground</h1>
+		<p class="text-text-muted text-lg">Write Rhai scripts, see live 3D preview, and inspect generated WGSL shader code.</p>
 	</header>
 
-	<div class="examples">
-		<span class="examples-label">Examples:</span>
+	<div class="flex flex-wrap items-center gap-2">
+		<span class="font-medium text-text-muted">Examples:</span>
 		{#each examples as example}
-			<button class="example-btn" onclick={() => loadExample(example)}>
+			<button class="py-1 px-3 text-sm bg-bg border-2 border-border cursor-pointer transition-all duration-150 hover:bg-border-light hover:border-border" onclick={() => loadExample(example)}>
 				{example.name}
 			</button>
 		{/each}
 	</div>
 
-	<div class="editor-container">
+	<div class="editor-grid grid gap-3 h-[500px]">
 		<!-- Left Panel: Rhai Script Editor -->
-		<div class="panel editor-panel">
-			<div class="panel-header">
-				<span class="panel-title">Rhai Script</span>
+		<div class="panel flex flex-col border-2 border-border bg-bg overflow-hidden">
+			<div class="flex justify-between items-center py-2 px-3 bg-border-light border-b-2 border-border shrink-0">
+				<span class="font-semibold text-sm">Rhai Script</span>
 				{#if wasmReady}
-					<span class="status status-ready">Ready</span>
+					<span class="status-ready text-xs py-1 px-2 font-medium bg-[#d4edda] text-[#155724]">Ready</span>
 				{:else if isLoading}
-					<span class="status status-loading">Loading...</span>
+					<span class="status-loading text-xs py-1 px-2 font-medium bg-[#fff3cd] text-[#856404]">Loading...</span>
 				{:else}
-					<span class="status status-error">Error</span>
+					<span class="status-error text-xs py-1 px-2 font-medium bg-[#f8d7da] text-[#721c24]">Error</span>
 				{/if}
 			</div>
 			<textarea
-				class="code-input"
+				class="flex-1 min-h-0 p-3 font-mono text-sm leading-relaxed border-none resize-none bg-bg text-text focus:outline-none"
 				value={code}
 				oninput={handleInput}
 				spellcheck="false"
@@ -142,60 +142,60 @@ outer.subtract(inner)`
 		</div>
 
 		<!-- Center Panel: 3D Preview -->
-		<div class="panel preview-panel">
-			<div class="panel-header">
-				<span class="panel-title">3D Preview</span>
+		<div class="preview-panel panel flex flex-col border-2 border-border bg-bg overflow-hidden min-w-0">
+			<div class="flex justify-between items-center py-2 px-3 bg-border-light border-b-2 border-border shrink-0">
+				<span class="font-semibold text-sm">3D Preview</span>
 				{#if error}
-					<span class="status status-error">Script Error</span>
+					<span class="text-xs py-1 px-2 font-medium bg-[#f8d7da] text-[#721c24]">Script Error</span>
 				{:else if shaderError}
-					<span class="status status-error">Shader Error</span>
+					<span class="text-xs py-1 px-2 font-medium bg-[#f8d7da] text-[#721c24]">Shader Error</span>
 				{:else if wgslOutput}
-					<span class="status status-success">Live</span>
+					<span class="text-xs py-1 px-2 font-medium bg-[#d4edda] text-[#155724]">Live</span>
 				{/if}
 			</div>
-			<div class="preview-content">
+			<div class="flex-1 min-h-0 relative">
 				{#if error}
-					<div class="error-display">
-						<p class="error-title">Script Error</p>
-						<pre class="error-message">{error}</pre>
+					<div class="flex flex-col items-center justify-center h-full p-4 bg-[#2d2d2d] text-[#ff6b6b]">
+						<p class="font-semibold mb-2">Script Error</p>
+						<pre class="font-mono text-xs text-[#ffaa88] max-w-full overflow-auto whitespace-pre-wrap break-words text-left bg-transparent border-none p-0">{error}</pre>
 					</div>
 				{:else if isLoading}
-					<div class="loading-display">Loading WASM module...</div>
+					<div class="flex items-center justify-center h-full bg-[#2d2d2d] text-text-muted italic">Loading WASM module...</div>
 				{:else if wgslOutput}
 					<WebGPURenderer wgslCode={wgslOutput} onError={handleShaderError} />
 				{:else}
-					<div class="loading-display">Write a script to see the preview</div>
+					<div class="flex items-center justify-center h-full bg-[#2d2d2d] text-text-muted italic">Write a script to see the preview</div>
 				{/if}
 			</div>
 		</div>
 
 		<!-- Right Panel: WGSL Output (Collapsible) -->
-		<div class="panel wgsl-panel" class:collapsed={!showWgsl}>
-			<button class="panel-header panel-header-clickable" onclick={() => (showWgsl = !showWgsl)}>
-				<span class="toggle-content">
-					<span class="toggle-icon">{showWgsl ? '▶' : '◀'}</span>
-					<span class="panel-title">WGSL</span>
+		<div class="wgsl-panel panel flex flex-col border-2 border-border bg-bg overflow-hidden" class:collapsed={!showWgsl}>
+			<button class="flex justify-between items-center py-2 px-3 bg-border-light border-b-2 border-border shrink-0 cursor-pointer w-full text-left font-inherit border-none text-inherit hover:bg-bg-alt" onclick={() => (showWgsl = !showWgsl)}>
+				<span class="toggle-content flex items-center gap-2">
+					<span class="text-xs opacity-60">{showWgsl ? '\u25B6' : '\u25C0'}</span>
+					<span class="panel-title font-semibold text-sm">WGSL</span>
 				</span>
 				{#if wgslOutput && showWgsl}
-					<span class="status status-success">Compiled</span>
+					<span class="text-xs py-1 px-2 font-medium bg-[#d4edda] text-[#155724]">Compiled</span>
 				{/if}
 			</button>
 			{#if showWgsl}
-				<div class="wgsl-output">
+				<div class="flex-1 min-h-0 overflow-auto bg-[#2d2d2d]">
 					{#if wgslOutput}
-						<pre><code>{wgslOutput}</code></pre>
+						<pre class="bg-transparent m-0 p-3 border-none overflow-visible font-mono text-xs leading-relaxed whitespace-pre-wrap break-words"><code class="text-[#e6e6e6] bg-transparent p-0">{wgslOutput}</code></pre>
 					{:else if error}
-						<div class="wgsl-error">Fix script errors to see WGSL output</div>
+						<div class="flex items-center justify-center h-full text-text-muted italic p-4">Fix script errors to see WGSL output</div>
 					{:else}
-						<div class="wgsl-empty">No output</div>
+						<div class="flex items-center justify-center h-full text-text-muted italic p-4">No output</div>
 					{/if}
 				</div>
 			{/if}
 		</div>
 	</div>
 
-	<div class="info">
-		<p>
+	<div class="p-4 bg-border-light border-2 border-border">
+		<p class="m-0 text-text-muted text-sm">
 			This playground uses WebAssembly to compile Rhai scripts and WebGPU to render SDFs in
 			real-time. The generated WGSL shader code can be inspected by expanding the WGSL panel.
 		</p>
@@ -203,63 +203,36 @@ outer.subtract(inner)`
 </div>
 
 <style>
-	.playground {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-		max-width: 1600px;
-		margin: 0 auto;
-		padding: var(--space-4);
-	}
-
-	.playground-header {
-		text-align: center;
-	}
-
-	.playground-header h1 {
-		margin-bottom: var(--space-2);
-	}
-
-	.playground-header p {
-		color: var(--color-text-muted);
-		font-size: var(--text-lg);
-	}
-
-	.examples {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: var(--space-2);
-	}
-
-	.examples-label {
-		font-weight: 500;
-		color: var(--color-text-muted);
-	}
-
-	.example-btn {
-		padding: var(--space-1) var(--space-3);
-		font-size: var(--text-sm);
-		background: var(--color-bg);
-		border: 2px solid var(--color-border);
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
-
-	.example-btn:hover {
-		background: var(--color-border-light);
-		border-color: var(--color-border);
-	}
-
-	.editor-container {
-		display: grid;
+	/* Grid layout - needs custom CSS for responsive behavior */
+	.editor-grid {
 		grid-template-columns: 1fr 1.5fr auto;
-		gap: var(--space-3);
-		height: 500px;
+	}
+
+	.wgsl-panel {
+		width: 350px;
+	}
+
+	.wgsl-panel.collapsed {
+		width: 50px;
+	}
+
+	.wgsl-panel.collapsed .panel-title {
+		writing-mode: vertical-rl;
+		text-orientation: mixed;
+	}
+
+	.wgsl-panel.collapsed .toggle-content {
+		flex-direction: column;
+	}
+
+	.wgsl-panel.collapsed button {
+		flex-direction: column;
+		padding: 0.75rem 0.5rem;
+		height: 100%;
 	}
 
 	@media (max-width: 1100px) {
-		.editor-container {
+		.editor-grid {
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr auto;
 			height: auto;
@@ -272,232 +245,25 @@ outer.subtract(inner)`
 
 		.wgsl-panel {
 			grid-column: 1 / -1;
+			width: 100%;
+		}
+
+		.wgsl-panel.collapsed {
+			width: 100%;
 		}
 	}
 
 	@media (max-width: 700px) {
-		.editor-container {
+		.editor-grid {
 			grid-template-columns: 1fr;
 		}
 
-		.editor-panel {
+		.panel:first-child {
 			height: 250px;
 		}
 
 		.preview-panel {
 			height: 350px;
 		}
-	}
-
-	.panel {
-		display: flex;
-		flex-direction: column;
-		border: 2px solid var(--color-border);
-		background: var(--color-bg);
-		overflow: hidden;
-	}
-
-	.preview-panel {
-		min-width: 0;
-	}
-
-	.wgsl-panel {
-		width: 350px;
-	}
-
-	.wgsl-panel.collapsed {
-		width: 50px;
-	}
-
-	.panel-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: var(--space-2) var(--space-3);
-		background: var(--color-border-light);
-		border-bottom: 2px solid var(--color-border);
-		flex-shrink: 0;
-	}
-
-	.panel-title {
-		font-weight: 600;
-		font-size: var(--text-sm);
-	}
-
-	.panel-header-clickable {
-		cursor: pointer;
-		width: 100%;
-		text-align: left;
-		font: inherit;
-		border: none;
-		color: inherit;
-	}
-
-	.panel-header-clickable:hover {
-		background: var(--color-bg-alt);
-	}
-
-	.toggle-content {
-		display: flex;
-		align-items: center;
-		gap: var(--space-2);
-	}
-
-	.toggle-icon {
-		font-size: var(--text-xs);
-		opacity: 0.6;
-	}
-
-	.wgsl-panel.collapsed .panel-title {
-		writing-mode: vertical-rl;
-		text-orientation: mixed;
-	}
-
-	.wgsl-panel.collapsed .toggle-icon {
-		margin-bottom: var(--space-2);
-	}
-
-	.wgsl-panel.collapsed .panel-header {
-		flex-direction: column;
-		padding: var(--space-3) var(--space-2);
-		height: 100%;
-	}
-
-	.wgsl-panel.collapsed .toggle-content {
-		flex-direction: column;
-	}
-
-	.status {
-		font-size: var(--text-xs);
-		padding: var(--space-1) var(--space-2);
-		font-weight: 500;
-	}
-
-	.status-ready,
-	.status-success {
-		background: #d4edda;
-		color: #155724;
-	}
-
-	.status-loading {
-		background: #fff3cd;
-		color: #856404;
-	}
-
-	.status-error {
-		background: #f8d7da;
-		color: #721c24;
-	}
-
-	.code-input {
-		flex: 1;
-		min-height: 0;
-		padding: var(--space-3);
-		font-family: var(--font-mono);
-		font-size: var(--text-sm);
-		line-height: 1.6;
-		border: none;
-		resize: none;
-		background: var(--color-bg);
-		color: var(--color-text);
-	}
-
-	.code-input:focus {
-		outline: none;
-	}
-
-	.preview-content {
-		flex: 1;
-		min-height: 0;
-		position: relative;
-	}
-
-	.error-display {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		padding: var(--space-4);
-		background: #2d2d2d;
-		color: #ff6b6b;
-	}
-
-	.error-title {
-		font-weight: 600;
-		margin-bottom: var(--space-2);
-	}
-
-	.error-message {
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		color: #ffaa88;
-		max-width: 100%;
-		overflow: auto;
-		white-space: pre-wrap;
-		word-break: break-word;
-		text-align: left;
-		background: transparent;
-		border: none;
-		padding: 0;
-	}
-
-	.loading-display {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		background: #2d2d2d;
-		color: var(--color-text-muted);
-		font-style: italic;
-	}
-
-	.wgsl-output {
-		flex: 1;
-		min-height: 0;
-		overflow: auto;
-		background: #2d2d2d;
-	}
-
-	.wgsl-output pre {
-		margin: 0;
-		padding: var(--space-3);
-		border: none;
-		background: transparent;
-		overflow: visible;
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		line-height: 1.5;
-		white-space: pre-wrap;
-		word-break: break-word;
-	}
-
-	.wgsl-output code {
-		color: #e6e6e6;
-		background: transparent;
-		padding: 0;
-	}
-
-	.wgsl-error,
-	.wgsl-empty {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		color: var(--color-text-muted);
-		font-style: italic;
-		padding: var(--space-4);
-	}
-
-	.info {
-		padding: var(--space-4);
-		background: var(--color-border-light);
-		border: 2px solid var(--color-border);
-	}
-
-	.info p {
-		margin: 0;
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
 	}
 </style>

@@ -170,21 +170,21 @@ donut.smooth_union(frosting, 0.05)`
 	<title>Examples - Soyuz</title>
 </svelte:head>
 
-<div class="examples-page container">
-	<header class="page-header">
-		<h1>Examples</h1>
-		<p class="lead">Learn by example. Each script is complete and ready to run.</p>
+<div class="container py-10 px-6 pb-16">
+	<header class="mb-12">
+		<h1 class="mb-3">Examples</h1>
+		<p class="text-lg text-text-muted">Learn by example. Each script is complete and ready to run.</p>
 	</header>
 
-	<div class="examples-grid">
+	<div class="flex flex-col gap-8">
 		{#each examples as example}
-			<div class="example-card card">
-				<div class="example-header">
-					<h2>{example.title}</h2>
+			<div class="card flex flex-col gap-4">
+				<div class="flex items-center justify-between gap-4">
+					<h2 class="text-xl">{example.title}</h2>
 					<span class="tag">{example.difficulty}</span>
 				</div>
-				<p class="example-description">{example.description}</p>
-				<div class="example-code">
+				<p class="text-text-muted">{example.description}</p>
+				<div class="border-2 border-border overflow-hidden">
 					<CodeBlock
 						code={example.code}
 						filename="{example.title.toLowerCase().replace(/ /g, '_')}.rhai"
@@ -194,54 +194,3 @@ donut.smooth_union(frosting, 0.05)`
 		{/each}
 	</div>
 </div>
-
-<style>
-	.examples-page {
-		padding: var(--space-10) var(--space-6) var(--space-16);
-	}
-
-	.page-header {
-		margin-bottom: var(--space-12);
-	}
-
-	.page-header h1 {
-		margin-bottom: var(--space-3);
-	}
-
-	.lead {
-		font-size: var(--text-lg);
-		color: var(--color-text-muted);
-	}
-
-	.examples-grid {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-8);
-	}
-
-	.example-card {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-	}
-
-	.example-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: var(--space-4);
-	}
-
-	.example-header h2 {
-		font-size: var(--text-xl);
-	}
-
-	.example-description {
-		color: var(--color-text-muted);
-	}
-
-	.example-code {
-		border: var(--border-width) solid var(--color-border);
-		overflow: hidden;
-	}
-</style>

@@ -20,22 +20,10 @@
 	/>
 </svelte:head>
 
-<div class="app">
+<div class="flex flex-col min-h-screen">
 	<Nav />
-	<main>
+	<main class="flex-1">
 		{@render children()}
 	</main>
 	<Footer />
 </div>
-
-<style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-	}
-</style>

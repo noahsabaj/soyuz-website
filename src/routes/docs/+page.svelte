@@ -31,80 +31,23 @@
 	<title>Documentation - Soyuz</title>
 </svelte:head>
 
-<div class="docs-home">
-	<header class="docs-header">
-		<h1>Documentation</h1>
-		<p class="lead">Everything you need to build 3D models with Soyuz.</p>
+<div>
+	<header class="mb-10">
+		<h1 class="mb-3">Documentation</h1>
+		<p class="text-lg text-text-muted">Everything you need to build 3D models with Soyuz.</p>
 	</header>
 
-	<div class="docs-grid">
+	<div class="grid gap-6 sm:grid-cols-2">
 		{#each sections as section}
-			<a href={section.href} class="section-card card card-hover">
-				<h2>{section.title}</h2>
-				<p>{section.description}</p>
-				<ul class="section-items">
+			<a href={section.href} class="card card-hover no-underline text-inherit">
+				<h2 class="text-xl mb-2">{section.title}</h2>
+				<p class="text-text-muted text-sm mb-4">{section.description}</p>
+				<ul class="flex flex-wrap gap-2 list-none">
 					{#each section.items as item}
-						<li>{item}</li>
+						<li class="font-mono text-xs text-text-subtle bg-bg-alt py-1 px-2">{item}</li>
 					{/each}
 				</ul>
 			</a>
 		{/each}
 	</div>
 </div>
-
-<style>
-	.docs-header {
-		margin-bottom: var(--space-10);
-	}
-
-	.docs-header h1 {
-		margin-bottom: var(--space-3);
-	}
-
-	.lead {
-		font-size: var(--text-lg);
-		color: var(--color-text-muted);
-	}
-
-	.docs-grid {
-		display: grid;
-		gap: var(--space-6);
-	}
-
-	.section-card {
-		text-decoration: none;
-		color: inherit;
-	}
-
-	.section-card h2 {
-		font-size: var(--text-xl);
-		margin-bottom: var(--space-2);
-	}
-
-	.section-card p {
-		color: var(--color-text-muted);
-		font-size: var(--text-sm);
-		margin-bottom: var(--space-4);
-	}
-
-	.section-items {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
-		list-style: none;
-	}
-
-	.section-items li {
-		font-family: var(--font-mono);
-		font-size: var(--text-xs);
-		color: var(--color-text-subtle);
-		background: var(--color-bg-alt);
-		padding: var(--space-1) var(--space-2);
-	}
-
-	@media (min-width: 640px) {
-		.docs-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-</style>

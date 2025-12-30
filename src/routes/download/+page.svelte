@@ -77,123 +77,128 @@
 	<title>Download - Soyuz</title>
 </svelte:head>
 
-<div class="download-page container">
-	<header class="page-header">
-		<h1>Download Soyuz</h1>
-		<p class="lead">Get started with procedural 3D modeling.</p>
-		<p class="version">Latest: {VERSION}</p>
+<div class="container py-10 px-6 pb-16">
+	<header class="text-center mb-8">
+		<h1 class="mb-3">Download Soyuz</h1>
+		<p class="text-lg text-text-muted">Get started with procedural 3D modeling.</p>
+		<p class="text-sm text-accent font-mono mt-2">Latest: {VERSION}</p>
 	</header>
 
-	<section class="download-hero">
+	<section class="flex flex-col items-center gap-6 py-10 px-6 bg-bg-alt border-2 border-border mb-12">
 		{#if detectedPlatform === 'linux'}
 			<!-- Linux gets two side-by-side options -->
-			<p class="platform-label">Download for Linux</p>
-			<div class="linux-options">
-				<a href={getDownloadUrl(linuxDownloads.deb.filename)} class="download-button primary">
-					<span class="icon"><LinuxIcon size={28} /></span>
-					<span class="text">
-						<span class="label">{linuxDownloads.deb.label}</span>
-						<span class="subtitle">{linuxDownloads.deb.subtitle}</span>
+			<p class="text-xl font-semibold mb-4">Download for Linux</p>
+			<div class="flex gap-4 flex-wrap justify-center">
+				<a href={getDownloadUrl(linuxDownloads.deb.filename)} class="download-btn-primary flex items-center gap-3 py-4 px-6 no-underline border-2 border-accent bg-accent text-white text-lg transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md">
+					<span class="flex items-center justify-center"><LinuxIcon size={28} /></span>
+					<span class="flex flex-col">
+						<span>{linuxDownloads.deb.label}</span>
+						<span class="text-xs opacity-70">{linuxDownloads.deb.subtitle}</span>
 					</span>
 				</a>
-				<a href={getDownloadUrl(linuxDownloads.appimage.filename)} class="download-button primary-alt">
-					<span class="icon"><LinuxIcon size={28} /></span>
-					<span class="text">
-						<span class="label">{linuxDownloads.appimage.label}</span>
-						<span class="subtitle">{linuxDownloads.appimage.subtitle}</span>
+				<a href={getDownloadUrl(linuxDownloads.appimage.filename)} class="download-btn-alt flex items-center gap-3 py-4 px-6 no-underline border-2 border-accent bg-surface text-text text-lg transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md hover:bg-bg-alt">
+					<span class="flex items-center justify-center"><LinuxIcon size={28} /></span>
+					<span class="flex flex-col">
+						<span>{linuxDownloads.appimage.label}</span>
+						<span class="text-xs opacity-70">{linuxDownloads.appimage.subtitle}</span>
 					</span>
 				</a>
 			</div>
-			<p class="install-hint">.deb: Double-click to install. AppImage: Make executable, then run.</p>
+			<p class="text-sm text-text-muted mt-3">.deb: Double-click to install. AppImage: Make executable, then run.</p>
 		{:else if detectedPlatform !== 'unknown'}
 			{@const Icon = downloads[detectedPlatform].icon}
-			<a href={getDownloadUrl(downloads[detectedPlatform].filename)} class="download-button primary">
-				<span class="icon"><Icon size={28} /></span>
-				<span class="text">
-					<span class="label">{downloads[detectedPlatform].label}</span>
-					<span class="filename">{downloads[detectedPlatform].filename}</span>
+			<a href={getDownloadUrl(downloads[detectedPlatform].filename)} class="download-btn-primary flex items-center gap-3 py-4 px-6 no-underline border-2 border-accent bg-accent text-white text-lg transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md">
+				<span class="flex items-center justify-center"><Icon size={28} /></span>
+				<span class="flex flex-col">
+					<span>{downloads[detectedPlatform].label}</span>
+					<span class="text-xs opacity-80 font-mono">{downloads[detectedPlatform].filename}</span>
 				</span>
 			</a>
 		{:else}
-			<p class="detecting">Select your platform below</p>
+			<p class="text-lg text-text-muted">Select your platform below</p>
 		{/if}
 
-		<div class="other-platforms">
+		<div class="flex flex-wrap gap-3 justify-center">
 			{#each getOtherPlatforms() as platform}
 				{@const Icon = downloads[platform].icon}
-				<a href={getDownloadUrl(downloads[platform].filename)} class="download-button secondary">
-					<span class="icon"><Icon size={20} /></span>
-					<span class="text">{downloads[platform].label}</span>
+				<a href={getDownloadUrl(downloads[platform].filename)} class="flex items-center gap-3 py-4 px-6 no-underline border-2 border-border bg-surface text-text text-sm transition-all duration-150 hover:bg-bg-alt hover:shadow-sm">
+					<span class="flex items-center justify-center"><Icon size={20} /></span>
+					<span>{downloads[platform].label}</span>
 				</a>
 			{/each}
 		</div>
 
-		<a href="https://github.com/noahsabaj/soyuz/releases" class="all-releases">
+		<a
+			href="https://github.com/noahsabaj/soyuz/releases"
+			class="text-sm text-text-muted"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
 			View all releases on GitHub
 		</a>
 	</section>
 
-	<div class="download-grid">
-		<section class="install-instructions card">
-			<h2>Installation</h2>
+	<div class="grid gap-8 mb-12 lg:grid-cols-[2fr_1fr]">
+		<section class="card">
+			<h2 class="text-xl mb-6">Installation</h2>
 
-			<div class="tabs">
-				<details open>
-					<summary>Linux</summary>
-					<div class="tab-content">
-						<h4>.deb Installer (Ubuntu/Debian/Mint)</h4>
+			<div class="flex flex-col gap-2">
+				<details class="border-2 border-border bg-bg-alt" open>
+					<summary class="py-3 px-4 cursor-pointer font-semibold select-none hover:bg-surface">Linux</summary>
+					<div class="p-4 border-t-2 border-border flex flex-col gap-4">
+						<h4 class="text-sm text-text-muted mt-2">.deb Installer (Ubuntu/Debian/Mint)</h4>
 						<p>Double-click the .deb file to open the package installer, then click "Install Package".</p>
-						<p class="note">
+						<p class="text-sm text-text-muted p-3 bg-surface border-l-[3px] border-accent">
 							Or from terminal: <code>sudo dpkg -i soyuz-studio_*.deb</code>
 						</p>
 
-						<h4>AppImage (Other distros)</h4>
+						<h4 class="text-sm text-text-muted mt-2">AppImage (Other distros)</h4>
 						<p>
 							Right-click the downloaded file, select Properties, go to Permissions, and check
 							"Allow executing as program". Then double-click to run.
 						</p>
-						<p class="note">
+						<p class="text-sm text-text-muted p-3 bg-surface border-l-[3px] border-accent">
 							Or from terminal: <code>chmod +x *.AppImage && ./*.AppImage</code>
 						</p>
 					</div>
 				</details>
 
-				<details>
-					<summary>macOS</summary>
-					<div class="tab-content">
+				<details class="border-2 border-border bg-bg-alt">
+					<summary class="py-3 px-4 cursor-pointer font-semibold select-none hover:bg-surface">macOS</summary>
+					<div class="p-4 border-t-2 border-border flex flex-col gap-4">
 						<p>Open the .dmg file and drag Soyuz Studio to your Applications folder.</p>
-						<p class="note">
+						<p class="text-sm text-text-muted p-3 bg-surface border-l-[3px] border-accent">
 							On first launch, you may need to right-click and select "Open" to bypass Gatekeeper
 							since the app is not yet notarized.
 						</p>
 					</div>
 				</details>
 
-				<details>
-					<summary>Windows</summary>
-					<div class="tab-content">
-						<h4>MSI installer (recommended)</h4>
+				<details class="border-2 border-border bg-bg-alt">
+					<summary class="py-3 px-4 cursor-pointer font-semibold select-none hover:bg-surface">Windows</summary>
+					<div class="p-4 border-t-2 border-border flex flex-col gap-4">
+						<h4 class="text-sm text-text-muted mt-2">MSI installer (recommended)</h4>
 						<p>Double-click the .msi file and follow the setup wizard.</p>
 
-						<h4>Alternative: Portable</h4>
+						<h4 class="text-sm text-text-muted mt-2">Alternative: Portable</h4>
 						<p>Extract the .zip file and run soyuz-studio.exe directly.</p>
 					</div>
 				</details>
 			</div>
 		</section>
 
-		<aside class="download-info">
-			<div class="info-card card">
-				<h3>What's Included</h3>
-				<ul>
+		<aside class="flex flex-col gap-6">
+			<div class="card p-5">
+				<h3 class="text-sm uppercase tracking-wide text-text-muted mb-3">What's Included</h3>
+				<ul class="list-none flex flex-col gap-2 text-sm">
 					<li><strong>Soyuz Studio</strong> - Desktop IDE with real-time 3D preview</li>
 					<li><strong>soyuz</strong> - CLI for scripting and batch processing</li>
 				</ul>
 			</div>
 
-			<div class="info-card card">
-				<h3>System Requirements</h3>
-				<ul>
+			<div class="card p-5">
+				<h3 class="text-sm uppercase tracking-wide text-text-muted mb-3">System Requirements</h3>
+				<ul class="list-none flex flex-col gap-2 text-sm">
 					<li><strong>GPU:</strong> Vulkan-capable graphics card</li>
 					<li><strong>RAM:</strong> 4GB minimum, 8GB recommended</li>
 					<li><strong>Disk:</strong> ~100MB for installation</li>
@@ -202,13 +207,12 @@
 		</aside>
 	</div>
 
-	<section class="source-section card">
-		<h2>Build from Source</h2>
-		<p>For developers or unsupported platforms. Requires Rust 1.75+.</p>
+	<section class="card p-8 mb-12">
+		<h2 class="text-xl mb-2">Build from Source</h2>
+		<p class="text-text-muted mb-6">For developers or unsupported platforms. Requires Rust 1.75+.</p>
 
-		<div class="steps">
-			<CodeBlock
-				code={`git clone https://github.com/noahsabaj/soyuz
+		<CodeBlock
+			code={`git clone https://github.com/noahsabaj/soyuz
 cd soyuz
 cargo build --release
 
@@ -217,330 +221,37 @@ cargo build --release
 
 # Or the CLI
 ./target/release/soyuz --help`}
-			/>
-		</div>
+		/>
 	</section>
 
-	<section class="cli-section">
-		<h2>CLI Commands</h2>
-		<p>The <code>soyuz</code> CLI provides these commands:</p>
+	<section class="border-t-2 border-border pt-12">
+		<h2 class="text-2xl mb-3">CLI Commands</h2>
+		<p class="text-text-muted mb-8">The <code>soyuz</code> CLI provides these commands:</p>
 
-		<div class="commands-grid">
-			<div class="command card">
-				<h4>preview</h4>
-				<p>Open a live preview window for a script.</p>
+		<div class="grid gap-6 lg:grid-cols-2">
+			<div class="card p-5">
+				<h4 class="font-mono text-base text-accent mb-2">preview</h4>
+				<p class="text-sm text-text-muted mb-3">Open a live preview window for a script.</p>
 				<CodeBlock code="soyuz preview --script model.rhai" compact />
 			</div>
 
-			<div class="command card">
-				<h4>generate</h4>
-				<p>Export a script to a mesh file.</p>
+			<div class="card p-5">
+				<h4 class="font-mono text-base text-accent mb-2">generate</h4>
+				<p class="text-sm text-text-muted mb-3">Export a script to a mesh file.</p>
 				<CodeBlock code="soyuz generate --script model.rhai --output model.glb" compact />
 			</div>
 
-			<div class="command card">
-				<h4>watch</h4>
-				<p>Watch a file and auto-refresh preview on changes.</p>
+			<div class="card p-5">
+				<h4 class="font-mono text-base text-accent mb-2">watch</h4>
+				<p class="text-sm text-text-muted mb-3">Watch a file and auto-refresh preview on changes.</p>
 				<CodeBlock code="soyuz watch --script model.rhai" compact />
 			</div>
 
-			<div class="command card">
-				<h4>repl</h4>
-				<p>Interactive scripting shell.</p>
+			<div class="card p-5">
+				<h4 class="font-mono text-base text-accent mb-2">repl</h4>
+				<p class="text-sm text-text-muted mb-3">Interactive scripting shell.</p>
 				<CodeBlock code="soyuz repl" compact />
 			</div>
 		</div>
 	</section>
 </div>
-
-<style>
-	.download-page {
-		padding: var(--space-10) var(--space-6) var(--space-16);
-	}
-
-	.page-header {
-		text-align: center;
-		margin-bottom: var(--space-8);
-	}
-
-	.page-header h1 {
-		margin-bottom: var(--space-3);
-	}
-
-	.lead {
-		font-size: var(--text-lg);
-		color: var(--color-text-muted);
-	}
-
-	.version {
-		font-size: var(--text-sm);
-		color: var(--color-accent);
-		font-family: var(--font-mono);
-		margin-top: var(--space-2);
-	}
-
-	.download-hero {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--space-6);
-		padding: var(--space-10) var(--space-6);
-		background: var(--color-bg-alt);
-		border: var(--border-width) solid var(--color-border);
-		margin-bottom: var(--space-12);
-	}
-
-	.download-button {
-		display: flex;
-		align-items: center;
-		gap: var(--space-3);
-		padding: var(--space-4) var(--space-6);
-		text-decoration: none;
-		border: var(--border-width) solid var(--color-border);
-		transition: all 0.15s ease;
-	}
-
-	.download-button.primary {
-		background: var(--color-accent);
-		border-color: var(--color-accent);
-		color: var(--color-bg);
-		font-size: var(--text-lg);
-	}
-
-	.download-button.primary:hover {
-		background: var(--color-accent-hover);
-		transform: translateY(-2px);
-		box-shadow: var(--shadow-md);
-	}
-
-	.download-button.primary .text {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.download-button.primary .filename {
-		font-size: var(--text-xs);
-		opacity: 0.8;
-		font-family: var(--font-mono);
-	}
-
-	.download-button.primary-alt {
-		background: var(--color-surface);
-		border-color: var(--color-accent);
-		color: var(--color-text);
-		font-size: var(--text-lg);
-	}
-
-	.download-button.primary-alt:hover {
-		background: var(--color-bg-alt);
-		transform: translateY(-2px);
-		box-shadow: var(--shadow-md);
-	}
-
-	.download-button.primary-alt .text,
-	.download-button.primary .text {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.download-button .subtitle {
-		font-size: var(--text-xs);
-		opacity: 0.7;
-	}
-
-	.platform-label {
-		font-size: var(--text-xl);
-		font-weight: 600;
-		margin-bottom: var(--space-4);
-	}
-
-	.linux-options {
-		display: flex;
-		gap: var(--space-4);
-		flex-wrap: wrap;
-		justify-content: center;
-	}
-
-	.install-hint {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		margin-top: var(--space-3);
-	}
-
-	.download-button.secondary {
-		background: var(--color-surface);
-		color: var(--color-text);
-		font-size: var(--text-sm);
-	}
-
-	.download-button.secondary:hover {
-		background: var(--color-bg-alt);
-		box-shadow: var(--shadow-sm);
-	}
-
-	.download-button .icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.other-platforms {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-3);
-		justify-content: center;
-	}
-
-	.all-releases {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-	}
-
-	.detecting {
-		font-size: var(--text-lg);
-		color: var(--color-text-muted);
-	}
-
-	.download-grid {
-		display: grid;
-		gap: var(--space-8);
-		margin-bottom: var(--space-12);
-	}
-
-	.install-instructions h2 {
-		font-size: var(--text-xl);
-		margin-bottom: var(--space-6);
-	}
-
-	.tabs {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-	}
-
-	.tabs details {
-		border: var(--border-width) solid var(--color-border);
-		background: var(--color-bg-alt);
-	}
-
-	.tabs summary {
-		padding: var(--space-3) var(--space-4);
-		cursor: pointer;
-		font-weight: 600;
-		user-select: none;
-	}
-
-	.tabs summary:hover {
-		background: var(--color-surface);
-	}
-
-	.tab-content {
-		padding: var(--space-4);
-		border-top: var(--border-width) solid var(--color-border);
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-	}
-
-	.tab-content h4 {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		margin-top: var(--space-2);
-	}
-
-	.tab-content .note {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		padding: var(--space-3);
-		background: var(--color-surface);
-		border-left: 3px solid var(--color-accent);
-	}
-
-	.download-info {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-6);
-	}
-
-	.info-card {
-		padding: var(--space-5);
-	}
-
-	.info-card h3 {
-		font-size: var(--text-sm);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--color-text-muted);
-		margin-bottom: var(--space-3);
-	}
-
-	.info-card ul {
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-		font-size: var(--text-sm);
-	}
-
-	.source-section {
-		padding: var(--space-8);
-		margin-bottom: var(--space-12);
-	}
-
-	.source-section h2 {
-		font-size: var(--text-xl);
-		margin-bottom: var(--space-2);
-	}
-
-	.source-section > p {
-		color: var(--color-text-muted);
-		margin-bottom: var(--space-6);
-	}
-
-	.cli-section {
-		border-top: var(--border-width) solid var(--color-border);
-		padding-top: var(--space-12);
-	}
-
-	.cli-section h2 {
-		font-size: var(--text-2xl);
-		margin-bottom: var(--space-3);
-	}
-
-	.cli-section > p {
-		color: var(--color-text-muted);
-		margin-bottom: var(--space-8);
-	}
-
-	.commands-grid {
-		display: grid;
-		gap: var(--space-6);
-	}
-
-	.command {
-		padding: var(--space-5);
-	}
-
-	.command h4 {
-		font-family: var(--font-mono);
-		font-size: var(--text-base);
-		color: var(--color-accent);
-		margin-bottom: var(--space-2);
-	}
-
-	.command p {
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		margin-bottom: var(--space-3);
-	}
-
-	@media (min-width: 900px) {
-		.download-grid {
-			grid-template-columns: 2fr 1fr;
-		}
-
-		.commands-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-	}
-</style>

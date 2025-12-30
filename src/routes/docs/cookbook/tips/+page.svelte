@@ -1,19 +1,24 @@
-<svelte:head><title>Tips & Tricks - Soyuz</title></svelte:head>
-<div class="doc-page">
-	<h1>Tips & Tricks</h1>
-	<p class="lead">Best practices for effective modeling.</p>
+<svelte:head>
+	<title>Tips & Tricks - Soyuz</title>
+</svelte:head>
 
-	<section>
-		<h2>Transform Order Matters</h2>
+<div class="flex flex-col gap-8">
+	<header>
+		<h1 class="mb-2">Tips & Tricks</h1>
+		<p class="text-lg text-text-muted">Best practices for effective modeling.</p>
+	</header>
+
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Transform Order Matters</h2>
 		<p>
 			Transforms apply left to right. <code>translate().rotate()</code> gives different results than
 			<code>rotate().translate()</code>.
 		</p>
 	</section>
 
-	<section>
-		<h2>Smooth Blend Values</h2>
-		<ul>
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Smooth Blend Values</h2>
+		<ul class="pl-6 flex flex-col gap-2">
 			<li><code>k = 0.01</code> - barely visible</li>
 			<li><code>k = 0.05</code> - subtle fillet</li>
 			<li><code>k = 0.1</code> - noticeable blend</li>
@@ -21,39 +26,8 @@
 		</ul>
 	</section>
 
-	<section>
-		<h2>Return an SDF</h2>
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Return an SDF</h2>
 		<p>Your script must return an SDF. Don't end the last line with a semicolon.</p>
 	</section>
 </div>
-
-<style>
-	.doc-page {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-8);
-	}
-	h1 {
-		margin-bottom: var(--space-2);
-	}
-	.lead {
-		font-size: var(--text-lg);
-		color: var(--color-text-muted);
-	}
-	section {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-	}
-	section h2 {
-		font-size: var(--text-xl);
-		padding-top: var(--space-4);
-		border-top: 1px solid var(--color-border-light);
-	}
-	section ul {
-		padding-left: var(--space-6);
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-	}
-</style>
