@@ -1,0 +1,248 @@
+<script lang="ts">
+	import { marked } from 'marked';
+
+	interface Props {
+		content: string;
+	}
+
+	let { content }: Props = $props();
+
+	// Syntax highlighting for Rhai code (same as CodeBlock component)
+	function highlightRhai(source: string): string {
+		const tokens: Map<string, string> = new Map();
+		let tokenIndex = 0;
+
+		function addToken(match: string, className: string): string {
+			const placeholder = `\x00TKN${tokenIndex++}TKN\x00`;
+			const escaped = match
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;');
+			tokens.set(placeholder, `<span class="${className}">${escaped}</span>`);
+			return placeholder;
+		}
+
+		let result = source;
+
+		// 1. Extract comments first
+		result = result.replace(/(\/\/.*$)/gm, (match) => addToken(match, 'comment'));
+
+		// 2. Extract strings
+		result = result.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, (match) => addToken(match, 'string'));
+
+		// 3. Escape HTML in remaining code
+		result = result
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;');
+
+		// 4. Keywords
+		result = result.replace(
+			/\b(let|if|else|for|while|loop|fn|return|true|false|in|break|continue|throw|try|catch)\b/g,
+			'<span class="keyword">$1</span>'
+		);
+
+		// 5. Builtins (Soyuz functions)
+		result = result.replace(
+			/\b(sphere|cube|box3|cylinder|capsule|torus|cone|ellipsoid|plane|octahedron|hex_prism|tri_prism|rounded_box|ground_plane|union|subtract|intersect|smooth_union|smooth_subtract|smooth_intersect|translate|translate_x|translate_y|translate_z|rotate_x|rotate_y|rotate_z|scale|mirror_x|mirror_y|mirror_z|symmetry_x|symmetry_y|symmetry_z|shell|hollow|round|onion|elongate|twist|bend|repeat|repeat_limited|repeat_polar|deg|rad|PI|TAU|env_studio|env_daylight|env_sunset|env_night|env_clay|set_sun_direction|set_sun_color|set_sun_intensity|set_ambient_color|set_ambient_intensity|set_material_color|set_material_color_hex|set_material_shininess|set_specular_intensity|set_sky_horizon|set_sky_zenith|set_fog_color|set_fog_density|set_ao_enabled|set_ao_intensity|set_shadows_enabled|set_shadow_softness|rgb_hex|cos|sin)\b/g,
+			'<span class="builtin">$1</span>'
+		);
+
+		// 6. Numbers
+		result = result.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
+
+		// 7. Restore tokens
+		for (const [placeholder, html] of tokens) {
+			result = result.replace(placeholder, html);
+		}
+
+		return result;
+	}
+
+	// Configure marked for our use case
+	marked.setOptions({
+		gfm: true,
+		breaks: false
+	});
+
+	// Custom renderer for code blocks with syntax highlighting
+	const renderer = new marked.Renderer();
+
+	renderer.code = ({ text, lang }: { text: string; lang?: string }) => {
+		const language = lang || '';
+		// Apply Rhai syntax highlighting for rhai code blocks (or unspecified language)
+		const highlightedCode = (language === 'rhai' || language === '')
+			? highlightRhai(text)
+			: text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+		return `<div class="code-block-wrapper">
+			${language ? `<div class="code-lang">${language}</div>` : ''}
+			<pre class="code-block"><code class="language-${language}">${highlightedCode}</code></pre>
+		</div>`;
+	};
+
+	marked.use({ renderer });
+
+	let html = $derived(marked(content) as string);
+</script>
+
+<div class="markdown-content">
+	{@html html}
+</div>
+
+<style>
+	.markdown-content {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	/* Headings */
+	.markdown-content :global(h1) {
+		font-size: 2rem;
+		font-weight: 700;
+		margin-top: 2rem;
+		margin-bottom: 0.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 2px solid var(--color-border);
+	}
+
+	.markdown-content :global(h1:first-child) {
+		margin-top: 0;
+	}
+
+	.markdown-content :global(h2) {
+		font-size: 1.25rem;
+		font-weight: 700;
+		margin-top: 2rem;
+		margin-bottom: 0.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--color-border-light);
+	}
+
+	.markdown-content :global(h3) {
+		font-size: 1rem;
+		font-weight: 600;
+		margin-top: 1rem;
+		margin-bottom: 0.25rem;
+		font-family: var(--font-mono);
+		color: var(--color-accent);
+	}
+
+	.markdown-content :global(h4) {
+		font-size: 1rem;
+		font-weight: 600;
+		margin-top: 1rem;
+		margin-bottom: 0.25rem;
+	}
+
+	/* Paragraphs */
+	.markdown-content :global(p) {
+		line-height: 1.7;
+		color: var(--color-text);
+	}
+
+	/* Lists */
+	.markdown-content :global(ul),
+	.markdown-content :global(ol) {
+		padding-left: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.markdown-content :global(li) {
+		line-height: 1.6;
+	}
+
+	/* Inline code */
+	.markdown-content :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.9em;
+		background: var(--color-bg-code);
+		padding: 0.15em 0.4em;
+		border-radius: 2px;
+	}
+
+	/* Code blocks */
+	.markdown-content :global(.code-block-wrapper) {
+		margin: 0.5rem 0;
+	}
+
+	.markdown-content :global(.code-lang) {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--color-text-subtle);
+		background: var(--color-border-light);
+		padding: 0.25rem 0.75rem;
+		border: 2px solid var(--color-border);
+		border-bottom: none;
+		display: inline-block;
+	}
+
+	.markdown-content :global(.code-block) {
+		background: var(--color-bg-code);
+		border: 2px solid var(--color-border);
+		padding: 1rem;
+		overflow-x: auto;
+		margin: 0;
+	}
+
+	.markdown-content :global(.code-block code) {
+		background: none;
+		padding: 0;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		display: block;
+		white-space: pre;
+	}
+
+	/* Horizontal rule - hidden since h2 headings provide visual separation */
+	.markdown-content :global(hr) {
+		display: none;
+	}
+
+	/* Strong/Bold */
+	.markdown-content :global(strong) {
+		font-weight: 600;
+	}
+
+	/* Links */
+	.markdown-content :global(a) {
+		color: var(--color-accent);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	.markdown-content :global(a:hover) {
+		color: var(--color-accent-hover);
+	}
+
+	/* Blockquotes */
+	.markdown-content :global(blockquote) {
+		border-left: 3px solid var(--color-accent);
+		padding-left: 1rem;
+		margin: 1rem 0;
+		color: var(--color-text-muted);
+		font-style: italic;
+	}
+
+	/* Tables */
+	.markdown-content :global(table) {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 1rem 0;
+	}
+
+	.markdown-content :global(th),
+	.markdown-content :global(td) {
+		border: 1px solid var(--color-border-light);
+		padding: 0.5rem 0.75rem;
+		text-align: left;
+	}
+
+	.markdown-content :global(th) {
+		background: var(--color-bg-alt);
+		font-weight: 600;
+	}
+</style>
