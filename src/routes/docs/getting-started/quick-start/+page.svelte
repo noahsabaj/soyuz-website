@@ -6,12 +6,14 @@
 	<title>Quick Start - Soyuz</title>
 </svelte:head>
 
-<div class="doc-page">
-	<h1>Quick Start</h1>
-	<p class="lead">Create your first 3D model in 5 minutes.</p>
+<div class="flex flex-col gap-8">
+	<header>
+		<h1 class="mb-2">Quick Start</h1>
+		<p class="text-lg text-text-muted">Create your first 3D model in 5 minutes.</p>
+	</header>
 
-	<section>
-		<h2>The simplest script</h2>
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">The simplest script</h2>
 		<p>
 			A Soyuz script is a Rhai file that returns an SDF (Signed Distance Field). The simplest
 			possible script:
@@ -20,8 +22,8 @@
 		<p>This creates a sphere with radius 0.5 units, centered at the origin.</p>
 	</section>
 
-	<section>
-		<h2>Combining shapes</h2>
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Combining shapes</h2>
 		<p>Use method chaining to combine primitives:</p>
 		<CodeBlock
 			code={`// Union: combine two shapes
@@ -36,8 +38,8 @@ sphere(0.6).intersect(cube(0.8))`}
 		/>
 	</section>
 
-	<section>
-		<h2>Transforms</h2>
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Transforms</h2>
 		<p>Move, rotate, and scale shapes:</p>
 		<CodeBlock
 			code={`// Move a shape
@@ -52,8 +54,8 @@ torus(1.0, 0.3).scale(0.5)`}
 		/>
 	</section>
 
-	<section>
-		<h2>Variables and logic</h2>
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Variables and logic</h2>
 		<p>Rhai supports variables, loops, and conditionals:</p>
 		<CodeBlock
 			code={`let radius = 0.4;
@@ -72,10 +74,10 @@ body.subtract(hollow).union(handle)`}
 		/>
 	</section>
 
-	<section>
-		<h2>Preview and export</h2>
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Preview and export</h2>
 		<p><strong>In Soyuz Studio:</strong></p>
-		<ul>
+		<ul class="pl-6 flex flex-col gap-2">
 			<li>Press <code>Ctrl+Enter</code> to preview your model</li>
 			<li>Use the Export panel to save as GLB, GLTF, or OBJ</li>
 		</ul>
@@ -89,106 +91,12 @@ soyuz generate --script cup.rhai --output cup.glb`}
 		/>
 	</section>
 
-	<section>
-		<h2>Key rule</h2>
-		<p class="note">
+	<section class="flex flex-col gap-4">
+		<h2 class="text-xl pt-4 border-t border-border-light">Key rule</h2>
+		<p class="text-sm p-3 px-4 bg-bg-alt border-l-[3px] border-accent">
 			Your script must <strong>return an SDF</strong>. This means the last expression should not end
 			with a semicolon. If nothing renders, check that your final line returns a shape.
 		</p>
 	</section>
 
-	<nav class="doc-nav">
-		<a href="/docs/getting-started" class="prev">
-			<span class="label">Previous</span>
-			<span class="title">Installation</span>
-		</a>
-		<a href="/docs/getting-started/studio" class="next">
-			<span class="label">Next</span>
-			<span class="title">Soyuz Studio</span>
-		</a>
-	</nav>
 </div>
-
-<style>
-	.doc-page {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-8);
-	}
-
-	h1 {
-		margin-bottom: var(--space-2);
-	}
-
-	.lead {
-		font-size: var(--text-lg);
-		color: var(--color-text-muted);
-	}
-
-	section {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-	}
-
-	section h2 {
-		font-size: var(--text-xl);
-		padding-top: var(--space-4);
-		border-top: 1px solid var(--color-border-light);
-	}
-
-	section ul {
-		padding-left: var(--space-6);
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-	}
-
-	.note {
-		font-size: var(--text-sm);
-		padding: var(--space-3) var(--space-4);
-		background: var(--color-bg-alt);
-		border-left: 3px solid var(--color-accent);
-	}
-
-	.doc-nav {
-		display: flex;
-		justify-content: space-between;
-		padding-top: var(--space-8);
-		border-top: var(--border-width) solid var(--color-border);
-		margin-top: var(--space-8);
-		gap: var(--space-4);
-	}
-
-	.doc-nav a {
-		display: flex;
-		flex-direction: column;
-		text-decoration: none;
-		padding: var(--space-3) var(--space-4);
-		background: var(--color-bg-alt);
-		border: var(--border-width) solid var(--color-border);
-		transition: all 0.15s ease;
-	}
-
-	.doc-nav a:hover {
-		background: var(--color-surface);
-		box-shadow: var(--shadow-sm);
-	}
-
-	.doc-nav .label {
-		font-size: var(--text-xs);
-		color: var(--color-text-subtle);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	.doc-nav .title {
-		font-weight: 600;
-		color: var(--color-text);
-	}
-
-	.doc-nav .next {
-		margin-left: auto;
-		text-align: right;
-	}
-</style>

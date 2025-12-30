@@ -43,24 +43,40 @@
 		}
 	];
 
+	// Flatten all pages into a single ordered list for prev/next navigation
+	const allPages = sections.flatMap(section => section.items);
+
+	// Compute previous and next pages based on current URL
+	function getNavigation(pathname: string) {
+		const currentIndex = allPages.findIndex(p => p.href === pathname);
+		if (currentIndex === -1) return { prev: null, next: null };
+
+		return {
+			prev: currentIndex > 0 ? allPages[currentIndex - 1] : null,
+			next: currentIndex < allPages.length - 1 ? allPages[currentIndex + 1] : null
+		};
+	}
+
 	function isActive(href: string, pathname: string): boolean {
 		return pathname === href;
 	}
+
+	// Reactive navigation based on current page
+	let navigation = $derived(getNavigation($page.url.pathname));
 </script>
 
-<div class="docs-layout container">
-	<aside class="docs-sidebar">
-		<nav class="docs-nav">
+<div class="container grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-12 pt-10 pb-16 min-h-[calc(100vh-64px-200px)]">
+	<aside class="lg:sticky lg:top-[88px] lg:h-fit lg:max-h-[calc(100vh-88px-48px)] lg:overflow-y-auto max-lg:border-b-2 max-lg:border-border max-lg:pb-6 max-lg:mb-6">
+		<nav class="flex flex-col gap-6 max-lg:flex-row max-lg:flex-wrap max-lg:gap-8">
 			{#each sections as section}
-				<div class="nav-section">
-					<h4 class="nav-section-title">{section.title}</h4>
-					<ul class="nav-list">
+				<div>
+					<h4 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-2">{section.title}</h4>
+					<ul class="list-none flex flex-col gap-1">
 						{#each section.items as item}
 							<li>
 								<a
 									href={item.href}
-									class="nav-item"
-									class:active={isActive(item.href, $page.url.pathname)}
+									class="block text-sm text-text-muted no-underline py-1 px-3 -ml-3 border-l-2 border-transparent transition-all duration-150 hover:text-text {isActive(item.href, $page.url.pathname) ? 'text-text border-l-accent bg-bg-alt' : ''}"
 								>
 									{item.label}
 								</a>
@@ -72,92 +88,27 @@
 		</nav>
 	</aside>
 
-	<article class="docs-content">
+	<article class="max-w-[720px]">
 		{@render children()}
+
+		<!-- Automatic Prev/Next Navigation -->
+		{#if navigation.prev || navigation.next}
+			<nav class="flex justify-between pt-8 border-t-2 border-border mt-8 gap-4">
+				{#if navigation.prev}
+					<a href={navigation.prev.href} class="flex flex-col no-underline py-3 px-4 bg-bg-alt border-2 border-border transition-all duration-150 hover:bg-surface hover:shadow-sm">
+						<span class="text-xs text-text-subtle uppercase tracking-wide">Previous</span>
+						<span class="font-semibold text-text">{navigation.prev.label}</span>
+					</a>
+				{:else}
+					<div></div>
+				{/if}
+				{#if navigation.next}
+					<a href={navigation.next.href} class="flex flex-col no-underline py-3 px-4 bg-bg-alt border-2 border-border transition-all duration-150 hover:bg-surface hover:shadow-sm ml-auto text-right">
+						<span class="text-xs text-text-subtle uppercase tracking-wide">Next</span>
+						<span class="font-semibold text-text">{navigation.next.label}</span>
+					</a>
+				{/if}
+			</nav>
+		{/if}
 	</article>
 </div>
-
-<style>
-	.docs-layout {
-		display: grid;
-		grid-template-columns: 240px 1fr;
-		gap: var(--space-12);
-		padding-top: var(--space-10);
-		padding-bottom: var(--space-16);
-		min-height: calc(100vh - var(--nav-height) - 200px);
-	}
-
-	.docs-sidebar {
-		position: sticky;
-		top: calc(var(--nav-height) + var(--space-6));
-		height: fit-content;
-		max-height: calc(100vh - var(--nav-height) - var(--space-12));
-		overflow-y: auto;
-	}
-
-	.docs-nav {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-6);
-	}
-
-	.nav-section-title {
-		font-size: var(--text-xs);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--color-text-muted);
-		margin-bottom: var(--space-2);
-	}
-
-	.nav-list {
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-1);
-	}
-
-	.nav-item {
-		display: block;
-		font-size: var(--text-sm);
-		color: var(--color-text-muted);
-		text-decoration: none;
-		padding: var(--space-1) var(--space-3);
-		margin-left: calc(-1 * var(--space-3));
-		border-left: 2px solid transparent;
-		transition: all 0.15s ease;
-	}
-
-	.nav-item:hover {
-		color: var(--color-text);
-	}
-
-	.nav-item.active {
-		color: var(--color-text);
-		border-left-color: var(--color-accent);
-		background: var(--color-bg-alt);
-	}
-
-	.docs-content {
-		max-width: var(--max-width-prose);
-	}
-
-	@media (max-width: 900px) {
-		.docs-layout {
-			grid-template-columns: 1fr;
-		}
-
-		.docs-sidebar {
-			position: static;
-			border-bottom: var(--border-width) solid var(--color-border);
-			padding-bottom: var(--space-6);
-			margin-bottom: var(--space-6);
-		}
-
-		.docs-nav {
-			flex-direction: row;
-			flex-wrap: wrap;
-			gap: var(--space-8);
-		}
-	}
-</style>
