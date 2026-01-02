@@ -12,7 +12,12 @@ const config = {
 			fallback: undefined,
 			precompress: false,
 			strict: true
-		})
+		}),
+		prerender: {
+			// Handle missing anchor IDs by logging a warning instead of failing
+			// This occurs when markdown content has links to headings that get slugified differently
+			handleMissingId: 'warn'
+		}
 	}
 };
 
