@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 
 	const navLinks = [
+		{ href: '/about', label: 'About' },
 		{ href: '/docs', label: 'Docs' },
 		{ href: '/examples', label: 'Examples' },
 		{ href: '/playground', label: 'Playground' },
