@@ -76,19 +76,12 @@ body.subtract(hollow).union(handle)`}
 
 	<section class="flex flex-col gap-4">
 		<h2 class="text-xl pt-4 border-t border-border-light">Preview and export</h2>
-		<p><strong>In Soyuz Studio:</strong></p>
+		<p>In Soyuz Studio:</p>
 		<ul class="pl-6 flex flex-col gap-2">
-			<li>Press <code>Ctrl+Enter</code> to preview your model</li>
-			<li>Use the Export panel to save as GLB, GLTF, or OBJ</li>
+			<li>Press <code>Ctrl+Enter</code> to preview your model in a 3D window</li>
+			<li>Use <code>Ctrl+E</code> to open the Export panel</li>
+			<li>Choose format (GLB, GLTF, OBJ, or STL) and export</li>
 		</ul>
-		<p><strong>Using the CLI:</strong></p>
-		<CodeBlock
-			code={`# Preview in a window
-soyuz preview --script cup.rhai
-
-# Export to mesh
-soyuz generate --script cup.rhai --output cup.glb`}
-		/>
 	</section>
 
 	<section class="flex flex-col gap-4">

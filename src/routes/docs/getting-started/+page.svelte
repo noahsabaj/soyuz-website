@@ -31,25 +31,13 @@
 cd soyuz
 cargo build --release`}
 		/>
-		<p>This creates two binaries:</p>
-		<ul class="pl-6 flex flex-col gap-2">
-			<li><code>./target/release/soyuz-studio</code> - Desktop IDE</li>
-			<li><code>./target/release/soyuz</code> - Command-line tool</li>
-		</ul>
+		<p>This creates the Soyuz Studio binary at <code>./target/release/soyuz-studio</code>.</p>
 	</section>
 
 	<section class="flex flex-col gap-4">
-		<h2 class="text-xl pt-4 border-t border-border-light">Run the Studio</h2>
-		<CodeBlock code="cargo run --release -p app" />
-		<p>This launches Soyuz Studio, the desktop IDE for editing scripts and previewing models.</p>
-	</section>
-
-	<section class="flex flex-col gap-4">
-		<h2 class="text-xl pt-4 border-t border-border-light">Run the CLI</h2>
-		<CodeBlock code="cargo run --release -p soyuz-cli -- --help" />
-		<p>
-			The CLI provides commands for batch processing, previewing, and exporting without the GUI.
-		</p>
+		<h2 class="text-xl pt-4 border-t border-border-light">Run Soyuz Studio</h2>
+		<CodeBlock code="cargo run --release -p soyuz-app" />
+		<p>This launches Soyuz Studio, the desktop IDE for editing scripts, previewing models, and exporting meshes.</p>
 	</section>
 
 </div>

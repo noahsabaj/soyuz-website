@@ -9,8 +9,7 @@
 			items: [
 				{ href: '/docs/getting-started', label: 'Installation' },
 				{ href: '/docs/getting-started/quick-start', label: 'Quick Start' },
-				{ href: '/docs/getting-started/studio', label: 'Soyuz Studio' },
-				{ href: '/docs/getting-started/cli', label: 'CLI Usage' }
+				{ href: '/docs/getting-started/studio', label: 'Soyuz Studio' }
 			]
 		},
 		{

@@ -195,8 +195,7 @@
 			<div class="card p-5">
 				<h3 class="text-sm uppercase tracking-wide text-text-muted mb-3">What's Included</h3>
 				<ul class="list-none flex flex-col gap-2 text-sm">
-					<li><strong>Soyuz Studio</strong> - Desktop IDE with real-time 3D preview</li>
-					<li><strong>soyuz</strong> - CLI for scripting and batch processing</li>
+					<li><strong>Soyuz Studio</strong> - Desktop IDE with real-time 3D preview and mesh export</li>
 				</ul>
 			</div>
 
@@ -220,42 +219,8 @@
 cd soyuz
 cargo build --release
 
-# Run the desktop IDE
-./target/release/soyuz-studio
-
-# Or the CLI
-./target/release/soyuz --help`}
+# Run Soyuz Studio
+./target/release/soyuz-studio`}
 		/>
-	</section>
-
-	<section class="border-t-2 border-border pt-12">
-		<h2 class="text-2xl mb-3">CLI Commands</h2>
-		<p class="text-text-muted mb-8">The <code>soyuz</code> CLI provides these commands:</p>
-
-		<div class="grid gap-6 lg:grid-cols-2">
-			<div class="card p-5">
-				<h4 class="font-mono text-base text-accent mb-2">preview</h4>
-				<p class="text-sm text-text-muted mb-3">Open a live preview window for a script.</p>
-				<CodeBlock code="soyuz preview --script model.rhai" compact />
-			</div>
-
-			<div class="card p-5">
-				<h4 class="font-mono text-base text-accent mb-2">generate</h4>
-				<p class="text-sm text-text-muted mb-3">Export a script to a mesh file.</p>
-				<CodeBlock code="soyuz generate --script model.rhai --output model.glb" compact />
-			</div>
-
-			<div class="card p-5">
-				<h4 class="font-mono text-base text-accent mb-2">watch</h4>
-				<p class="text-sm text-text-muted mb-3">Watch a file and auto-refresh preview on changes.</p>
-				<CodeBlock code="soyuz watch --script model.rhai" compact />
-			</div>
-
-			<div class="card p-5">
-				<h4 class="font-mono text-base text-accent mb-2">repl</h4>
-				<p class="text-sm text-text-muted mb-3">Interactive scripting shell.</p>
-				<CodeBlock code="soyuz repl" compact />
-			</div>
-		</div>
 	</section>
 </div>

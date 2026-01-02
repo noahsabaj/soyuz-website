@@ -4,7 +4,7 @@
 			title: 'Getting Started',
 			description: 'Install Soyuz and create your first 3D model in minutes.',
 			href: '/docs/getting-started',
-			items: ['Installation', 'Quick Start', 'Soyuz Studio', 'CLI Usage']
+			items: ['Installation', 'Quick Start', 'Soyuz Studio']
 		},
 		{
 			title: 'Concepts',
