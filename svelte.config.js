@@ -13,6 +13,9 @@ const config = {
 			precompress: false,
 			strict: true
 		}),
+		paths: {
+			base: process.env.NODE_ENV === 'production' ? '/soyuz-website' : ''
+		},
 		prerender: {
 			// Handle missing anchor IDs by logging a warning instead of failing
 			// This occurs when markdown content has links to headings that get slugified differently
