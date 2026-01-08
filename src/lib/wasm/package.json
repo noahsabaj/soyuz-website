@@ -1,0 +1,9 @@
+{
+	"name": "soyuz-wasm",
+	"type": "module",
+	"description": "WebAssembly bindings for Soyuz - browser-based SDF scripting and WGSL generation",
+	"version": "0.1.0",
+	"license": "MIT OR Apache-2.0",
+	"main": "index.ts",
+	"types": "index.ts"
+}

@@ -1,0 +1,2 @@
+# Keep this directory tracked but ignore local build artifacts
+# The wasm files should be committed for deployment
