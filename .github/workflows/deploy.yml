@@ -25,14 +25,9 @@ jobs:
     steps:
       - name: Checkout website
         uses: actions/checkout@v4
-        with:
-          path: soyuz-website
 
-      - name: Checkout soyuz (for docs)
-        uses: actions/checkout@v4
-        with:
-          repository: noahsabaj/soyuz
-          path: soyuz
+      - name: Checkout soyuz repo (for docs import)
+        run: git clone --depth 1 https://github.com/noahsabaj/soyuz.git ../soyuz
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -40,17 +35,15 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        working-directory: soyuz-website
         run: bun install
 
       - name: Build site
-        working-directory: soyuz-website
         run: bun run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'soyuz-website/build'
+          path: 'build'
 
   deploy:
     environment:
