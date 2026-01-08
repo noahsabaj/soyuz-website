@@ -1,3 +1,7 @@
+<script lang="ts">
+	import { base } from '$app/paths';
+</script>
+
 <svelte:head>
 	<title>API Reference - Soyuz</title>
 </svelte:head>
@@ -14,10 +18,10 @@
 			into categories:
 		</p>
 		<ul class="pl-6 flex flex-col gap-2">
-			<li><a href="/docs/api/primitives">Primitives</a> - Basic shapes</li>
-			<li><a href="/docs/api/operations">Operations</a> - Boolean and smooth operations</li>
-			<li><a href="/docs/api/transforms">Transforms</a> - Position, rotation, scale</li>
-			<li><a href="/docs/api/environment">Environment</a> - Lighting and rendering settings</li>
+			<li><a href="{base}/docs/api/primitives">Primitives</a> - Basic shapes</li>
+			<li><a href="{base}/docs/api/operations">Operations</a> - Boolean and smooth operations</li>
+			<li><a href="{base}/docs/api/transforms">Transforms</a> - Position, rotation, scale</li>
+			<li><a href="{base}/docs/api/environment">Environment</a> - Lighting and rendering settings</li>
 		</ul>
 	</section>
 </div>

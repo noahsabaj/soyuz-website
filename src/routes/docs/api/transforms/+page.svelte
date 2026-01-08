@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import CodeBlock from '$lib/components/CodeBlock.svelte';
 </script>
 
@@ -671,8 +672,8 @@ sphere(0.2)
 	</section>
 
 	<footer class="text-sm text-text-muted pt-4 border-t border-border-light">
-		See also: <a href="/docs/api/primitives">Primitives</a> |
-		<a href="/docs/api/operations">Operations</a> |
-		<a href="/docs/api/environment">Environment</a>
+		See also: <a href="{base}/docs/api/primitives">Primitives</a> |
+		<a href="{base}/docs/api/operations">Operations</a> |
+		<a href="{base}/docs/api/environment">Environment</a>
 	</footer>
 </div>

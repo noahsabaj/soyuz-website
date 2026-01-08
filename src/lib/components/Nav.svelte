@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 
 	const navLinks = [
@@ -12,8 +13,10 @@
 	let mobileMenuOpen = $state(false);
 
 	function isActive(href: string, pathname: string): boolean {
-		if (href === '/') return pathname === '/';
-		return pathname.startsWith(href);
+		// Strip base path from pathname for comparison
+		const path = pathname.startsWith(base) ? pathname.slice(base.length) || '/' : pathname;
+		if (href === '/') return path === '/';
+		return path.startsWith(href);
 	}
 
 	function toggleMobileMenu() {
@@ -27,7 +30,7 @@
 
 <nav class="sticky top-0 z-50 bg-bg border-b-2 border-border h-16">
 	<div class="container flex items-center justify-between h-full gap-8">
-		<a href="/" class="flex items-center gap-1 font-mono text-lg font-semibold text-text no-underline">
+		<a href="{base}/" class="flex items-center gap-1 font-mono text-lg font-semibold text-text no-underline">
 			<span class="text-accent">//</span>
 			<span class="tracking-tight">soyuz</span>
 		</a>
@@ -35,7 +38,7 @@
 		<div class="hidden sm:flex items-center gap-1">
 			{#each navLinks as link}
 				<a
-					href={link.href}
+					href="{base}{link.href}"
 					class="text-sm font-medium text-text-muted no-underline py-2 px-3 transition-colors duration-150 hover:text-text hover:bg-bg-alt {isActive(link.href, $page.url.pathname) ? 'text-text bg-bg-alt' : ''}"
 				>
 					{link.label}
@@ -71,7 +74,7 @@
 		<div class="sm:hidden flex flex-col bg-surface border-t border-border-light p-4 gap-1">
 			{#each navLinks as link}
 				<a
-					href={link.href}
+					href="{base}{link.href}"
 					class="block py-3 px-4 text-base font-medium text-text-muted no-underline transition-colors duration-150 hover:text-text hover:bg-bg-alt {isActive(link.href, $page.url.pathname) ? 'text-text bg-bg-alt' : ''}"
 					onclick={closeMobileMenu}
 				>

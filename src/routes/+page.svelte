@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import CodeBlock from '$lib/components/CodeBlock.svelte';
 	import FeatureCard from '$lib/components/FeatureCard.svelte';
 
@@ -52,8 +53,8 @@ body.union(teeth).subtract(hole)`;
 						preview in real-time, export production-ready meshes.
 					</p>
 					<div class="flex gap-4 flex-wrap">
-						<a href="/docs/getting-started" class="btn btn-primary">Get Started</a>
-						<a href="/examples" class="btn">View Examples</a>
+						<a href="{base}/docs/getting-started" class="btn btn-primary">Get Started</a>
+						<a href="{base}/examples" class="btn">View Examples</a>
 					</div>
 				</div>
 				<div class="border-2 border-border shadow-lg">
@@ -166,7 +167,7 @@ column.twist(2.0)`}
 				</div>
 			</div>
 			<div class="mt-10 text-center">
-				<a href="/examples" class="btn">See more examples</a>
+				<a href="{base}/examples" class="btn">See more examples</a>
 			</div>
 		</div>
 	</section>
@@ -178,8 +179,8 @@ column.twist(2.0)`}
 				<h2 class="mb-3">Ready to build?</h2>
 				<p class="text-text-muted mb-8">Soyuz is open source and free to use. Get started in minutes.</p>
 				<div class="flex gap-4 justify-center flex-wrap">
-					<a href="/download" class="btn btn-primary">Download</a>
-					<a href="/docs" class="btn">Read the docs</a>
+					<a href="{base}/download" class="btn btn-primary">Download</a>
+					<a href="{base}/docs" class="btn">Read the docs</a>
 				</div>
 			</div>
 		</div>

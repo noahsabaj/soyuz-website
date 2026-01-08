@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 
 	let { children } = $props();
@@ -47,7 +48,9 @@
 
 	// Compute previous and next pages based on current URL
 	function getNavigation(pathname: string) {
-		const currentIndex = allPages.findIndex(p => p.href === pathname);
+		// Strip base path from pathname for comparison
+		const path = pathname.startsWith(base) ? pathname.slice(base.length) || '/' : pathname;
+		const currentIndex = allPages.findIndex(p => p.href === path);
 		if (currentIndex === -1) return { prev: null, next: null };
 
 		return {
@@ -57,7 +60,9 @@
 	}
 
 	function isActive(href: string, pathname: string): boolean {
-		return pathname === href;
+		// Strip base path from pathname for comparison
+		const path = pathname.startsWith(base) ? pathname.slice(base.length) || '/' : pathname;
+		return path === href;
 	}
 
 	// Reactive navigation based on current page
@@ -74,7 +79,7 @@
 						{#each section.items as item}
 							<li>
 								<a
-									href={item.href}
+									href="{base}{item.href}"
 									class="block text-sm text-text-muted no-underline py-1 px-3 -ml-3 border-l-2 border-transparent transition-all duration-150 hover:text-text {isActive(item.href, $page.url.pathname) ? 'text-text border-l-accent bg-bg-alt' : ''}"
 								>
 									{item.label}
@@ -94,7 +99,7 @@
 		{#if navigation.prev || navigation.next}
 			<nav class="flex justify-between pt-8 border-t-2 border-border mt-8 gap-4">
 				{#if navigation.prev}
-					<a href={navigation.prev.href} class="flex flex-col no-underline py-3 px-4 bg-bg-alt border-2 border-border transition-all duration-150 hover:bg-surface hover:shadow-sm">
+					<a href="{base}{navigation.prev.href}" class="flex flex-col no-underline py-3 px-4 bg-bg-alt border-2 border-border transition-all duration-150 hover:bg-surface hover:shadow-sm">
 						<span class="text-xs text-text-subtle uppercase tracking-wide">Previous</span>
 						<span class="font-semibold text-text">{navigation.prev.label}</span>
 					</a>
@@ -102,7 +107,7 @@
 					<div></div>
 				{/if}
 				{#if navigation.next}
-					<a href={navigation.next.href} class="flex flex-col no-underline py-3 px-4 bg-bg-alt border-2 border-border transition-all duration-150 hover:bg-surface hover:shadow-sm ml-auto text-right">
+					<a href="{base}{navigation.next.href}" class="flex flex-col no-underline py-3 px-4 bg-bg-alt border-2 border-border transition-all duration-150 hover:bg-surface hover:shadow-sm ml-auto text-right">
 						<span class="text-xs text-text-subtle uppercase tracking-wide">Next</span>
 						<span class="font-semibold text-text">{navigation.next.label}</span>
 					</a>

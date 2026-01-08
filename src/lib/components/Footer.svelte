@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Component metadata - no runtime state needed
+	import { base } from '$app/paths';
 </script>
 
 <footer class="bg-bg-alt border-t-2 border-border py-12 pb-8 mt-16">
@@ -15,16 +15,16 @@
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-8">
 			<div class="flex flex-col gap-3">
 				<h4 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-1">Product</h4>
-				<a href="/docs" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Documentation</a>
-				<a href="/examples" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Examples</a>
-				<a href="/download" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Download</a>
+				<a href="{base}/docs" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Documentation</a>
+				<a href="{base}/examples" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Examples</a>
+				<a href="{base}/download" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Download</a>
 			</div>
 
 			<div class="flex flex-col gap-3">
 				<h4 class="text-xs font-semibold uppercase tracking-widest text-text-muted mb-1">Resources</h4>
-				<a href="/docs/getting-started" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Getting Started</a>
-				<a href="/docs/api" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">API Reference</a>
-				<a href="/docs/cookbook" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Cookbook</a>
+				<a href="{base}/docs/getting-started" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Getting Started</a>
+				<a href="{base}/docs/api" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">API Reference</a>
+				<a href="{base}/docs/cookbook" class="text-sm text-text no-underline transition-colors duration-150 hover:text-accent">Cookbook</a>
 			</div>
 
 			<div class="flex flex-col gap-3">
