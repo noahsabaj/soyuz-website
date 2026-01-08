@@ -1,24 +1,29 @@
 <script lang="ts">
+	// Download page - fetches latest version from GitHub API at runtime
+	//
+	// Dynamically fetches the latest Soyuz release version so the download links
+	// stay current without requiring a website rebuild.
+
 	import { onMount } from 'svelte';
 	import CodeBlock from '$lib/components/CodeBlock.svelte';
 	import LinuxIcon from '$lib/components/icons/LinuxIcon.svelte';
 	import AppleIcon from '$lib/components/icons/AppleIcon.svelte';
 	import WindowsIcon from '$lib/components/icons/WindowsIcon.svelte';
-
-	// Import Cargo.toml as raw text to extract version (single source of truth)
-	import cargoToml from '@soyuz-docs/Cargo.toml?raw';
+	import { fetchLatestVersion } from '$lib/version';
 
 	import type { Component } from 'svelte';
 
 	type Platform = 'linux' | 'macos' | 'windows' | 'unknown';
 
-	// Extract version from workspace.package.version in Cargo.toml
-	const VERSION_CLEAN = cargoToml.match(/version\s*=\s*"([^"]+)"/)?.[1] ?? '0.0.0';
-	const VERSION = `v${VERSION_CLEAN}`;
+	// Version state - fetched from GitHub API on mount
+	let VERSION = $state('v0.0.0');
+	let VERSION_CLEAN = $state('0.0.0');
+	let isLoading = $state(true);
+
 	let detectedPlatform: Platform = $state('unknown');
 
 	// Linux has two download options
-	const linuxDownloads = {
+	const linuxDownloads = $derived({
 		deb: {
 			label: '.deb Installer',
 			subtitle: 'Ubuntu, Debian, Mint',
@@ -29,22 +34,22 @@
 			subtitle: 'Other distros',
 			filename: `soyuz-studio-${VERSION}-linux-x86_64.AppImage`
 		}
-	};
+	});
 
-	const downloads: Record<Exclude<Platform, 'unknown'>, { label: string; filename: string; icon: Component }> = {
+	const downloads: Record<Exclude<Platform, 'unknown'>, { label: string; filename: () => string; icon: Component }> = {
 		linux: {
 			label: 'Download for Linux',
-			filename: linuxDownloads.deb.filename,
+			filename: () => linuxDownloads.deb.filename,
 			icon: LinuxIcon
 		},
 		macos: {
 			label: 'Download for macOS',
-			filename: `soyuz-${VERSION}-macos-universal.dmg`,
+			filename: () => `soyuz-${VERSION}-macos-universal.dmg`,
 			icon: AppleIcon
 		},
 		windows: {
 			label: 'Download for Windows',
-			filename: `soyuz-${VERSION}-windows-x86_64.msi`,
+			filename: () => `soyuz-${VERSION}-windows-x86_64.msi`,
 			icon: WindowsIcon
 		}
 	};
@@ -72,8 +77,14 @@
 		return all.filter((p) => p !== detectedPlatform);
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		detectedPlatform = detectPlatform();
+
+		// Fetch latest version from GitHub API
+		const versionInfo = await fetchLatestVersion();
+		VERSION = versionInfo.version;
+		VERSION_CLEAN = versionInfo.versionClean;
+		isLoading = false;
 	});
 </script>
 
@@ -85,11 +96,17 @@
 	<header class="text-center mb-8">
 		<h1 class="mb-3">Download Soyuz</h1>
 		<p class="text-lg text-text-muted">Get started with procedural 3D modeling.</p>
-		<p class="text-sm text-accent font-mono mt-2">Latest: {VERSION}</p>
+		{#if isLoading}
+			<p class="text-sm text-text-muted font-mono mt-2">Loading latest version...</p>
+		{:else}
+			<p class="text-sm text-accent font-mono mt-2">Latest: {VERSION}</p>
+		{/if}
 	</header>
 
 	<section class="flex flex-col items-center gap-6 py-10 px-6 bg-bg-alt border-2 border-border mb-12">
-		{#if detectedPlatform === 'linux'}
+		{#if isLoading}
+			<p class="text-lg text-text-muted">Loading download options...</p>
+		{:else if detectedPlatform === 'linux'}
 			<!-- Linux gets two side-by-side options -->
 			<p class="text-xl font-semibold mb-4">Download for Linux</p>
 			<div class="flex gap-4 flex-wrap justify-center">
@@ -111,26 +128,30 @@
 			<p class="text-sm text-text-muted mt-3">.deb: Double-click to install. AppImage: Make executable, then run.</p>
 		{:else if detectedPlatform !== 'unknown'}
 			{@const Icon = downloads[detectedPlatform].icon}
-			<a href={getDownloadUrl(downloads[detectedPlatform].filename)} class="download-btn-primary flex items-center gap-3 py-4 px-6 no-underline border-2 border-accent bg-accent text-white text-lg transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md">
+			{@const filename = downloads[detectedPlatform].filename()}
+			<a href={getDownloadUrl(filename)} class="download-btn-primary flex items-center gap-3 py-4 px-6 no-underline border-2 border-accent bg-accent text-white text-lg transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md">
 				<span class="flex items-center justify-center"><Icon size={28} /></span>
 				<span class="flex flex-col">
 					<span>{downloads[detectedPlatform].label}</span>
-					<span class="text-xs opacity-80 font-mono">{downloads[detectedPlatform].filename}</span>
+					<span class="text-xs opacity-80 font-mono">{filename}</span>
 				</span>
 			</a>
 		{:else}
 			<p class="text-lg text-text-muted">Select your platform below</p>
 		{/if}
 
-		<div class="flex flex-wrap gap-3 justify-center">
-			{#each getOtherPlatforms() as platform}
-				{@const Icon = downloads[platform].icon}
-				<a href={getDownloadUrl(downloads[platform].filename)} class="flex items-center gap-3 py-4 px-6 no-underline border-2 border-border bg-surface text-text text-sm transition-all duration-150 hover:bg-bg-alt hover:shadow-sm">
-					<span class="flex items-center justify-center"><Icon size={20} /></span>
-					<span>{downloads[platform].label}</span>
-				</a>
-			{/each}
-		</div>
+		{#if !isLoading}
+			<div class="flex flex-wrap gap-3 justify-center">
+				{#each getOtherPlatforms() as platform}
+					{@const Icon = downloads[platform].icon}
+					{@const filename = downloads[platform].filename()}
+					<a href={getDownloadUrl(filename)} class="flex items-center gap-3 py-4 px-6 no-underline border-2 border-border bg-surface text-text text-sm transition-all duration-150 hover:bg-bg-alt hover:shadow-sm">
+						<span class="flex items-center justify-center"><Icon size={20} /></span>
+						<span>{downloads[platform].label}</span>
+					</a>
+				{/each}
+			</div>
+		{/if}
 
 		<a
 			href="https://github.com/noahsabaj/soyuz/releases"
