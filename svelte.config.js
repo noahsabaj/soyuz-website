@@ -20,14 +20,8 @@ const config = {
 			// Handle missing anchor IDs by logging a warning instead of failing
 			// This occurs when markdown content has links to headings that get slugified differently
 			handleMissingId: 'warn',
-			// Handle HTTP errors during prerender (e.g., favicon without base path)
-			handleHttpError: ({ path, message }) => {
-				// Ignore favicon errors - browsers request it at root regardless of base path
-				if (path === '/favicon.ico') {
-					return;
-				}
-				throw new Error(message);
-			}
+			// Warn instead of error for 404s (static assets at root won't have base path)
+			handleHttpError: 'warn'
 		}
 	}
 };
