@@ -1,16 +1,23 @@
-// Fetches the latest Soyuz release version from GitHub API
+// Fetches the latest Soyuz release metadata from GitHub.
 //
-// Returns the version tag (e.g., "v0.5.0") and clean version (e.g., "0.5.0").
-// Caches the result for 5 minutes to avoid excessive API calls.
+// The download page resolves links from actual release assets instead of
+// assuming every platform filename exists for every release.
 
 const GITHUB_API_URL = 'https://api.github.com/repos/noahsabaj/soyuz/releases/latest';
-const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION_MS = 5 * 60 * 1000;
 
-interface VersionInfo {
-	version: string; // e.g., "v0.5.0"
-	versionClean: string; // e.g., "0.5.0"
+export interface ReleaseAsset {
+	name: string;
+	browserDownloadUrl: string;
+}
+
+export interface VersionInfo {
+	version: string;
+	versionClean: string;
 	releaseUrl: string;
 	publishedAt: string;
+	assets: ReleaseAsset[];
+	isFallback: boolean;
 }
 
 interface CachedVersion {
@@ -18,13 +25,35 @@ interface CachedVersion {
 	timestamp: number;
 }
 
+interface GitHubReleaseAsset {
+	name: string;
+	browser_download_url: string;
+}
+
+interface GitHubRelease {
+	tag_name: string;
+	html_url: string;
+	published_at: string;
+	assets?: GitHubReleaseAsset[];
+}
+
 let cache: CachedVersion | null = null;
 
-// Default fallback version (used if API fails)
-const FALLBACK_VERSION = 'v0.5.0';
+const FALLBACK_VERSION = 'v0.6.0';
+const FALLBACK_RELEASE_URL = 'https://github.com/noahsabaj/soyuz/releases';
+
+export function resolveReleaseAsset(info: VersionInfo, filename: string): ReleaseAsset | null {
+	return info.assets.find((asset) => asset.name === filename) ?? null;
+}
+
+export function releaseFallbackAsset(filename: string): ReleaseAsset {
+	return {
+		name: filename,
+		browserDownloadUrl: FALLBACK_RELEASE_URL
+	};
+}
 
 export async function fetchLatestVersion(): Promise<VersionInfo> {
-	// Check cache first
 	if (cache && Date.now() - cache.timestamp < CACHE_DURATION_MS) {
 		return cache.data;
 	}
@@ -40,30 +69,35 @@ export async function fetchLatestVersion(): Promise<VersionInfo> {
 			throw new Error(`GitHub API returned ${response.status}`);
 		}
 
-		const release = await response.json();
-		const version = release.tag_name as string;
+		const release = (await response.json()) as GitHubRelease;
+		const version = release.tag_name;
 		const versionClean = version.replace(/^v/, '');
 
 		const data: VersionInfo = {
 			version,
 			versionClean,
 			releaseUrl: release.html_url,
-			publishedAt: release.published_at
+			publishedAt: release.published_at,
+			assets:
+				release.assets?.map((asset) => ({
+					name: asset.name,
+					browserDownloadUrl: asset.browser_download_url
+				})) ?? [],
+			isFallback: false
 		};
 
-		// Update cache
 		cache = { data, timestamp: Date.now() };
-
 		return data;
 	} catch (error) {
 		console.warn('Failed to fetch latest version from GitHub:', error);
 
-		// Return fallback
 		return {
 			version: FALLBACK_VERSION,
 			versionClean: FALLBACK_VERSION.replace(/^v/, ''),
-			releaseUrl: 'https://github.com/noahsabaj/soyuz/releases',
-			publishedAt: ''
+			releaseUrl: FALLBACK_RELEASE_URL,
+			publishedAt: '',
+			assets: [],
+			isFallback: true
 		};
 	}
 }

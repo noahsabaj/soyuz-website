@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "website",
+      "name": "soyuz-website",
       "dependencies": {
         "marked": "^17.0.1",
       },

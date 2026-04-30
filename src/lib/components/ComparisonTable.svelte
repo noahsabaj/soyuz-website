@@ -18,10 +18,10 @@
 	<table class="w-full border-collapse min-w-[600px]">
 		<thead>
 			<tr>
-				{#each headers as header, i}
+				{#each headers as header, i (header)}
 					<th
 						class="p-3 text-left text-sm font-semibold border-2 border-border bg-bg-alt"
-						class:bg-accent-light={i === highlightColumn}
+						class:highlight-cell={i === highlightColumn}
 						class:text-accent={i === highlightColumn}
 						class:font-bold={i === highlightColumn}
 					>
@@ -31,13 +31,13 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each rows as row}
+			{#each rows as row (row.feature)}
 				<tr>
 					<td class="p-3 text-sm border-2 border-border bg-surface font-medium">{row.feature}</td>
-					{#each row.values as value, i}
+					{#each row.values as value, i (i)}
 						<td
 							class="p-3 text-sm border-2 border-border"
-							class:bg-accent-light={i + 1 === highlightColumn}
+							class:highlight-cell={i + 1 === highlightColumn}
 							class:bg-surface={i + 1 !== highlightColumn}
 						>
 							{value}
@@ -50,7 +50,9 @@
 </div>
 
 <style>
-	.bg-accent-light {
-		background-color: #e8eeeb;
+	.highlight-cell {
+		background-color: var(--color-accent-light);
+		color: var(--color-text);
+		border-color: var(--color-border-light);
 	}
 </style>

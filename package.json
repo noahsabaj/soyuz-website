@@ -1,5 +1,5 @@
 {
-	"name": "website",
+	"name": "soyuz-website",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -8,7 +8,9 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && node scripts/check-api-docs.mjs && npm run check:docs && npm run check:theme",
+		"check:docs": "cargo run --manifest-path ../soyuz/Cargo.toml -p xtask -- docs check --website .",
+		"check:theme": "cargo run --manifest-path ../soyuz/Cargo.toml -p xtask -- theme check --website .",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."

@@ -6,22 +6,22 @@ Documentation and landing page for the Soyuz project.
 
 - SvelteKit
 - Tailwind CSS v4
-- Bun
+- npm
 
 ## Development
 
 ```bash
-bun install
-bun run dev
+npm install
+npm run dev
 ```
 
 ## Build
 
 ```bash
-bun run build
+npm run build
 ```
 
 ## Notes
 
-- The cookbook page imports `SOYUZ_COOKBOOK.md` directly from the parent `soyuz/` directory (SSOT)
-- Requires the `soyuz` repo to be present at `../soyuz` for the cookbook import to work
+- API docs import `SOYUZ_API.json` directly from the parent `soyuz/` directory
+- Requires the `soyuz` repo to be present at `../soyuz` for docs imports to work

@@ -3,184 +3,194 @@
 	import CodeBlock from '$lib/components/CodeBlock.svelte';
 	import FeatureCard from '$lib/components/FeatureCard.svelte';
 
-	const heroCode = `// A gear in 6 lines
-let body = cylinder(0.8, 0.2);
-let tooth = box3(0.2, 0.2, 0.15)
-    .translate_x(0.85);
-let teeth = tooth.repeat_polar(12);
-let hole = cylinder(0.25, 0.3);
+	const heroCode = `// Barrel - procedural asset in Rhai
+let body = cylinder(0.5, 1.2);
 
-body.union(teeth).subtract(hole)`;
+let band_top = torus(0.5, 0.08).translate_y(0.5);
+let band_bottom = torus(0.5, 0.08).translate_y(-0.5);
+let band_middle = torus(0.52, 0.06);
+
+body
+    .smooth_union(band_top, 0.05)
+    .smooth_union(band_bottom, 0.05)
+    .smooth_union(band_middle, 0.03)
+    .hollow(0.05)`;
 
 	const features = [
 		{
-			title: 'Signed Distance Fields',
+			title: 'Studio-first workflow',
 			description:
-				'Mathematical functions that describe shapes. Combine primitives with boolean operations, smooth blends, and transforms.',
-			icon: 'sdf'
-		},
-		{
-			title: 'Real-time Preview',
-			description:
-				'GPU-accelerated raymarching shows your model instantly. Edit code and see changes in real-time.',
+				'Write Rhai scripts in a focused workbench with files, tabs, command palette, output, and docked preview.',
 			icon: 'preview'
 		},
 		{
-			title: 'Script-based Workflow',
+			title: 'Signed Distance Fields',
 			description:
-				'Write in Rhai, a JavaScript-like language. Variables, loops, conditionals - procedural generation made simple.',
+				'Compose primitives with boolean operations, smooth blends, transforms, repetition, and modifiers.',
+			icon: 'sdf'
+		},
+		{
+			title: 'Browser playground',
+			description:
+				'Try Soyuz in the web with WebAssembly compilation and WebGPU rendering before installing Studio.',
 			icon: 'code'
 		},
 		{
-			title: 'Export Ready',
+			title: 'Export-ready meshes',
 			description:
-				'Generate meshes via marching cubes. Export to glTF, GLB, or OBJ for your game engine or 3D software.',
+				'Generate marching-cubes meshes and export GLB, glTF, OBJ, or STL for downstream 3D tools.',
 			icon: 'export'
 		}
 	];
 </script>
 
-<div class="pb-16">
-	<!-- Hero Section -->
-	<section class="py-16 pb-20 border-b-2 border-border">
+<svelte:head>
+	<title>Soyuz Studio - Procedural 3D Workbench</title>
+	<meta
+		name="description"
+		content="Soyuz Studio is a procedural 3D workbench for writing Rhai SDF scripts, previewing geometry, and exporting production-ready meshes."
+	/>
+</svelte:head>
+
+<div>
+	<section class="border-b border-border bg-bg/95 py-14 lg:py-18">
 		<div class="container">
-			<div class="grid gap-12 items-center lg:grid-cols-2 lg:gap-16">
+			<div class="grid gap-10 lg:grid-cols-[0.92fr_1.35fr] lg:items-center">
 				<div>
-					<p class="font-mono text-xs font-medium uppercase tracking-widest text-accent mb-4">Procedural 3D Asset Generation</p>
-					<h1 class="text-4xl md:text-5xl lg:text-6xl mb-6">Create 3D models<br />with code</h1>
-					<p class="text-lg text-text-muted max-w-[480px] mb-8">
-						Soyuz is a framework for building 3D assets using Signed Distance Fields. Write scripts,
-						preview in real-time, export production-ready meshes.
+					<p class="soyuz-kicker mb-4">Procedural 3D Workbench</p>
+					<h1 class="mb-6 text-4xl md:text-5xl lg:text-6xl">Soyuz Studio</h1>
+					<p class="mb-8 max-w-[560px] text-lg leading-8 text-text-muted">
+						A desktop IDE for building 3D assets with code. Write Rhai SDF scripts, preview geometry
+						in a docked workbench, and export clean meshes for your pipeline.
 					</p>
-					<div class="flex gap-4 flex-wrap">
-						<a href="{base}/docs/getting-started" class="btn btn-primary">Get Started</a>
-						<a href="{base}/examples" class="btn">View Examples</a>
+					<div class="flex flex-wrap gap-3">
+						<a href="{base}/download" class="btn btn-primary">Download Soyuz Studio</a>
+						<a href="{base}/playground" class="btn">Try Playground</a>
+					</div>
+					<div class="mt-8 grid max-w-[560px] grid-cols-3 gap-3 text-sm">
+						<div class="border border-border bg-bg-alt p-3">
+							<div class="font-mono text-sdf">Rhai</div>
+							<div class="text-text-subtle">scripting</div>
+						</div>
+						<div class="border border-border bg-bg-alt p-3">
+							<div class="font-mono text-sdf">WGPU</div>
+							<div class="text-text-subtle">preview</div>
+						</div>
+						<div class="border border-border bg-bg-alt p-3">
+							<div class="font-mono text-sdf">GLB/STL</div>
+							<div class="text-text-subtle">export</div>
+						</div>
 					</div>
 				</div>
-				<div class="border-2 border-border shadow-lg">
-					<CodeBlock code={heroCode} filename="gear.rhai" />
+
+				<div class="overflow-hidden rounded-lg border border-border bg-surface shadow-lg">
+					<div class="flex items-center justify-between border-b border-border bg-bg-alt px-4 py-2">
+						<div class="flex items-center gap-2">
+							<span class="h-2.5 w-2.5 rounded-full bg-error"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-warning"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-sdf"></span>
+						</div>
+						<span class="font-mono text-xs text-text-subtle">Soyuz Studio</span>
+					</div>
+					<img
+						src="{base}/product/studio-workbench-preview.webp"
+						alt="Soyuz Studio workbench showing a Rhai script beside a docked 3D preview tab"
+						class="block aspect-[16/9] w-full bg-bg-code object-cover"
+					/>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- How it Works -->
-	<section class="py-16 bg-bg-alt border-b-2 border-border">
+	<section class="border-b border-border py-16">
 		<div class="container">
-			<h2 class="mb-12">How it works</h2>
-			<div class="flex flex-col gap-6 lg:flex-row lg:items-stretch">
-				<div class="bg-surface border-2 border-border p-6 shadow-sm lg:flex-1">
-					<div class="font-mono text-xl font-bold text-accent mb-3">1</div>
-					<h3 class="text-lg mb-2">Write a script</h3>
-					<p class="text-text-muted text-sm">
-						Use primitives like <code>sphere()</code>, <code>cube()</code>, <code>cylinder()</code> and
-						combine them with operations.
+			<div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+				<div>
+					<p class="soyuz-kicker mb-3">Modeling Loop</p>
+					<h2 class="text-3xl">Code, preview, export</h2>
+				</div>
+				<p class="max-w-[520px] text-text-muted">
+					Soyuz keeps the procedural loop tight: the script is the source of truth, the preview is
+					interactive, and export is built into the same workbench.
+				</p>
+			</div>
+			<div class="grid gap-4 lg:grid-cols-3">
+				<div class="card">
+					<div class="mb-4 font-mono text-sm text-sdf">01 / Script</div>
+					<h3 class="mb-2 text-xl">Describe geometry</h3>
+					<p class="text-sm leading-6 text-text-muted">
+						Build shapes from primitives and compose them with SDF operations instead of pushing
+						vertices by hand.
 					</p>
 				</div>
-				<div class="hidden lg:flex items-center text-2xl text-border px-2">
-					<span aria-hidden="true">&#8594;</span>
+				<div class="card">
+					<div class="mb-4 font-mono text-sm text-sdf">02 / Preview</div>
+					<h3 class="mb-2 text-xl">Inspect in the tab</h3>
+					<p class="text-sm leading-6 text-text-muted">
+						Run the docked Preview tab for the current script, then pop it out only when you want a
+						separate native window.
+					</p>
 				</div>
-				<div class="bg-surface border-2 border-border p-6 shadow-sm lg:flex-1">
-					<div class="font-mono text-xl font-bold text-accent mb-3">2</div>
-					<h3 class="text-lg mb-2">Preview instantly</h3>
-					<p class="text-text-muted text-sm">GPU raymarching renders your SDF in real-time. See changes as you type.</p>
-				</div>
-				<div class="hidden lg:flex items-center text-2xl text-border px-2">
-					<span aria-hidden="true">&#8594;</span>
-				</div>
-				<div class="bg-surface border-2 border-border p-6 shadow-sm lg:flex-1">
-					<div class="font-mono text-xl font-bold text-accent mb-3">3</div>
-					<h3 class="text-lg mb-2">Export mesh</h3>
-					<p class="text-text-muted text-sm">Marching cubes converts your SDF to a triangle mesh. Export to glTF, GLB, or OBJ.</p>
+				<div class="card">
+					<div class="mb-4 font-mono text-sm text-sdf">03 / Export</div>
+					<h3 class="mb-2 text-xl">Ship a mesh</h3>
+					<p class="text-sm leading-6 text-text-muted">
+						Choose mesh resolution, format, and optimization settings from the integrated Export
+						tab.
+					</p>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Features -->
-	<section class="py-16 border-b-2 border-border">
+	<section class="border-b border-border bg-bg-alt/70 py-16">
 		<div class="container">
-			<h2 class="mb-10">Built for procedural generation</h2>
-			<div class="grid gap-6 sm:grid-cols-2">
-				{#each features as feature}
+			<div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+				<div>
+					<p class="soyuz-kicker mb-3">Try It Online</p>
+					<h2 class="mb-4 text-3xl">A browser playground for the same modeling language</h2>
+					<p class="mb-6 text-text-muted">
+						The web playground compiles Rhai through WebAssembly and renders SDFs with WebGPU. It is
+						the fastest way to understand Soyuz before installing Studio.
+					</p>
+					<a href="{base}/playground" class="btn btn-primary">Open Playground</a>
+				</div>
+				<div class="overflow-hidden rounded-lg border border-border bg-bg-code shadow-md">
+					<CodeBlock code={heroCode} filename="barrel.rhai" />
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="border-b border-border py-16">
+		<div class="container">
+			<div class="mb-10">
+				<p class="soyuz-kicker mb-3">Capabilities</p>
+				<h2 class="text-3xl">Built for procedural asset generation</h2>
+			</div>
+			<div class="grid gap-5 sm:grid-cols-2">
+				{#each features as feature (feature.title)}
 					<FeatureCard {...feature} />
 				{/each}
 			</div>
 		</div>
 	</section>
 
-	<!-- Code Examples -->
-	<section class="py-16 border-b-2 border-border">
+	<section class="py-16">
 		<div class="container">
-			<div class="mb-10">
-				<h2 class="mb-2">From simple to complex</h2>
-				<p class="text-text-muted">Start with a sphere, end with a spaceship.</p>
-			</div>
-			<div class="grid gap-6 sm:grid-cols-2">
-				<div class="card p-5">
-					<h4 class="text-sm font-semibold mb-3">Primitives</h4>
-					<CodeBlock
-						code={`sphere(0.5)
-cube(1.0)
-cylinder(0.3, 1.0)
-torus(0.5, 0.15)`}
-						compact
-					/>
-				</div>
-				<div class="card p-5">
-					<h4 class="text-sm font-semibold mb-3">Boolean Operations</h4>
-					<CodeBlock
-						code={`// Combine shapes
-sphere(0.5).union(cube(0.6))
-
-// Cut holes
-cube(1.0).subtract(sphere(0.7))
-
-// Smooth blend
-a.smooth_union(b, 0.1)`}
-						compact
-					/>
-				</div>
-				<div class="card p-5">
-					<h4 class="text-sm font-semibold mb-3">Transforms</h4>
-					<CodeBlock
-						code={`shape.translate(1.0, 0.0, 0.0)
-shape.rotate_y(deg(45.0))
-shape.scale(0.5)
-shape.mirror_x()`}
-						compact
-					/>
-				</div>
-				<div class="card p-5">
-					<h4 class="text-sm font-semibold mb-3">Modifiers</h4>
-					<CodeBlock
-						code={`// Make hollow
-sphere(0.5).shell(0.05)
-
-// Round edges
-cube(1.0).round(0.1)
-
-// Twist and bend
-column.twist(2.0)`}
-						compact
-					/>
-				</div>
-			</div>
-			<div class="mt-10 text-center">
-				<a href="{base}/examples" class="btn">See more examples</a>
-			</div>
-		</div>
-	</section>
-
-	<!-- CTA -->
-	<section class="pt-16">
-		<div class="container">
-			<div class="card text-center p-12 bg-bg-alt">
-				<h2 class="mb-3">Ready to build?</h2>
-				<p class="text-text-muted mb-8">Soyuz is open source and free to use. Get started in minutes.</p>
-				<div class="flex gap-4 justify-center flex-wrap">
+			<div class="rounded-lg border border-border bg-surface p-8 text-center shadow-md md:p-12">
+				<p class="soyuz-kicker mb-3">Open Source</p>
+				<h2 class="mb-4 text-3xl">Install the workbench or start in the browser</h2>
+				<p class="mx-auto mb-8 max-w-[620px] text-text-muted">
+					Soyuz is free to use, inspect, and extend. Download Studio for the full desktop workflow,
+					or open the Playground for a fast browser trial.
+				</p>
+				<div class="flex flex-wrap justify-center gap-3">
 					<a href="{base}/download" class="btn btn-primary">Download</a>
-					<a href="{base}/docs" class="btn">Read the docs</a>
+					<a href="{base}/docs" class="btn">Read Docs</a>
+					<a href="https://github.com/noahsabaj/soyuz" class="btn" target="_blank" rel="noreferrer"
+						>GitHub</a
+					>
 				</div>
 			</div>
 		</div>

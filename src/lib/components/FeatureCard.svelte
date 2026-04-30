@@ -10,7 +10,7 @@
 
 <div class="card flex flex-col gap-3">
 	<div
-		class="w-10 h-10 flex items-center justify-center bg-accent-light border-2 border-border text-accent"
+		class="flex h-10 w-10 items-center justify-center rounded-md border border-border-light bg-accent-light text-sdf"
 		data-icon={icon}
 	>
 		{#if icon === 'sdf'}

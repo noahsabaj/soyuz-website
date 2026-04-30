@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { allFunctions } from '$lib/apiManifest';
 	import { marked } from 'marked';
 
 	interface Props {
@@ -7,18 +8,40 @@
 
 	let { content }: Props = $props();
 
+	function escapeRegExp(value: string): string {
+		return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
+
+	function escapeHtml(value: string): string {
+		return value
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;');
+	}
+
+	function slugify(value: string): string {
+		return value
+			.toLowerCase()
+			.trim()
+			.replace(/[^a-z0-9\s-]/g, '')
+			.replace(/\s/g, '-');
+	}
+
+	const builtinNames = [...allFunctions.map((fn) => fn.name), 'cos', 'sin'].sort(
+		(a, b) => b.length - a.length
+	);
+	const builtinPattern = new RegExp(`\\b(${builtinNames.map(escapeRegExp).join('|')})\\b`, 'g');
+
 	// Syntax highlighting for Rhai code (same as CodeBlock component)
 	function highlightRhai(source: string): string {
-		const tokens: Map<string, string> = new Map();
+		const tokens: Array<[string, string]> = [];
 		let tokenIndex = 0;
 
 		function addToken(match: string, className: string): string {
 			const placeholder = `\x00TKN${tokenIndex++}TKN\x00`;
-			const escaped = match
-				.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;');
-			tokens.set(placeholder, `<span class="${className}">${escaped}</span>`);
+			const escaped = match.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			tokens.push([placeholder, `<span class="${className}">${escaped}</span>`]);
 			return placeholder;
 		}
 
@@ -31,10 +54,7 @@
 		result = result.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, (match) => addToken(match, 'string'));
 
 		// 3. Escape HTML in remaining code
-		result = result
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;');
+		result = result.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 		// 4. Keywords
 		result = result.replace(
@@ -43,10 +63,7 @@
 		);
 
 		// 5. Builtins (Soyuz functions)
-		result = result.replace(
-			/\b(sphere|cube|box3|cylinder|capsule|torus|cone|ellipsoid|plane|octahedron|hex_prism|tri_prism|rounded_box|ground_plane|union|subtract|intersect|smooth_union|smooth_subtract|smooth_intersect|translate|translate_x|translate_y|translate_z|rotate_x|rotate_y|rotate_z|scale|mirror_x|mirror_y|mirror_z|symmetry_x|symmetry_y|symmetry_z|shell|hollow|round|onion|elongate|twist|bend|repeat|repeat_limited|repeat_polar|deg|rad|PI|TAU|env_studio|env_daylight|env_sunset|env_night|env_clay|set_sun_direction|set_sun_color|set_sun_intensity|set_ambient_color|set_ambient_intensity|set_material_color|set_material_color_hex|set_material_shininess|set_specular_intensity|set_sky_horizon|set_sky_zenith|set_fog_color|set_fog_density|set_ao_enabled|set_ao_intensity|set_shadows_enabled|set_shadow_softness|rgb_hex|cos|sin)\b/g,
-			'<span class="builtin">$1</span>'
-		);
+		result = result.replace(builtinPattern, '<span class="builtin">$1</span>');
 
 		// 6. Numbers
 		result = result.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
@@ -71,14 +88,27 @@
 	renderer.code = ({ text, lang }: { text: string; lang?: string }) => {
 		const language = lang || '';
 		// Apply Rhai syntax highlighting for rhai code blocks (or unspecified language)
-		const highlightedCode = (language === 'rhai' || language === '')
-			? highlightRhai(text)
-			: text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		const highlightedCode =
+			language === 'rhai' || language === ''
+				? highlightRhai(text)
+				: text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 		return `<div class="code-block-wrapper">
 			${language ? `<div class="code-lang">${language}</div>` : ''}
 			<pre class="code-block"><code class="language-${language}">${highlightedCode}</code></pre>
 		</div>`;
+	};
+
+	renderer.heading = ({
+		tokens,
+		depth
+	}: {
+		tokens?: Array<{ raw?: string; text?: string }>;
+		depth: number;
+	}) => {
+		const text = tokens?.map((token) => token.text ?? token.raw ?? '').join('') ?? '';
+		const id = slugify(text);
+		return `<h${depth} id="${id}">${escapeHtml(text)}</h${depth}>`;
 	};
 
 	marked.use({ renderer });

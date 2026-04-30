@@ -173,11 +173,13 @@ donut.smooth_union(frosting, 0.05)`
 <div class="container py-10 px-6 pb-16">
 	<header class="mb-12">
 		<h1 class="mb-3">Examples</h1>
-		<p class="text-lg text-text-muted">Learn by example. Each script is complete and ready to run.</p>
+		<p class="text-lg text-text-muted">
+			Learn by example. Each script is complete and ready to run.
+		</p>
 	</header>
 
 	<div class="flex flex-col gap-8">
-		{#each examples as example}
+		{#each examples as example (example.title)}
 			<div class="card flex flex-col gap-4">
 				<div class="flex items-center justify-between gap-4">
 					<h2 class="text-xl">{example.title}</h2>

@@ -6,8 +6,7 @@
 		{ href: '/about', label: 'About' },
 		{ href: '/docs', label: 'Docs' },
 		{ href: '/examples', label: 'Examples' },
-		{ href: '/playground', label: 'Playground' },
-		{ href: '/download', label: 'Download' }
+		{ href: '/playground', label: 'Playground' }
 	];
 
 	let mobileMenuOpen = $state(false);
@@ -28,18 +27,25 @@
 	}
 </script>
 
-<nav class="sticky top-0 z-50 bg-bg border-b-2 border-border h-16">
+<nav class="sticky top-0 z-50 h-16 border-b border-border bg-bg/95 backdrop-blur">
 	<div class="container flex items-center justify-between h-full gap-8">
-		<a href="{base}/" class="flex items-center gap-1 font-mono text-lg font-semibold text-text no-underline">
-			<span class="text-accent">//</span>
-			<span class="tracking-tight">soyuz</span>
+		<a href="{base}/" class="soyuz-wordmark text-lg">
+			<span class="soyuz-mark" aria-hidden="true">
+				<img src="{base}/favicon.svg" alt="" />
+			</span>
+			<span>Soyuz Studio</span>
 		</a>
 
 		<div class="hidden sm:flex items-center gap-1">
-			{#each navLinks as link}
+			{#each navLinks as link (link.href)}
 				<a
 					href="{base}{link.href}"
-					class="text-sm font-medium text-text-muted no-underline py-2 px-3 transition-colors duration-150 hover:text-text hover:bg-bg-alt {isActive(link.href, $page.url.pathname) ? 'text-text bg-bg-alt' : ''}"
+					class="rounded-md text-sm font-medium text-text-muted no-underline py-2 px-3 transition-colors duration-150 hover:text-text hover:bg-bg-alt {isActive(
+						link.href,
+						$page.url.pathname
+					)
+						? 'text-text bg-bg-alt'
+						: ''}"
 				>
 					{link.label}
 				</a>
@@ -49,11 +55,17 @@
 		<div class="flex items-center gap-4">
 			<a
 				href="https://github.com/noahsabaj/soyuz"
-				class="font-mono text-xs uppercase tracking-wider text-text-muted no-underline py-2 px-3 transition-colors duration-150 hover:text-text hover:bg-bg-alt"
+				class="hidden font-mono text-xs uppercase text-text-muted no-underline transition-colors duration-150 hover:text-text md:inline"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
 				GitHub
+			</a>
+			<a
+				href="{base}/download"
+				class="nav-download hidden rounded-md bg-accent px-3 py-2 text-sm font-semibold text-bg no-underline transition-colors duration-150 hover:bg-accent-hover md:inline-flex"
+			>
+				Download
 			</a>
 			<button
 				class="sm:hidden bg-transparent border-none p-2 cursor-pointer ml-2"
@@ -72,15 +84,27 @@
 
 	{#if mobileMenuOpen}
 		<div class="sm:hidden flex flex-col bg-surface border-t border-border-light p-4 gap-1">
-			{#each navLinks as link}
+			{#each navLinks as link (link.href)}
 				<a
 					href="{base}{link.href}"
-					class="block py-3 px-4 text-base font-medium text-text-muted no-underline transition-colors duration-150 hover:text-text hover:bg-bg-alt {isActive(link.href, $page.url.pathname) ? 'text-text bg-bg-alt' : ''}"
+					class="block rounded-md py-3 px-4 text-base font-medium text-text-muted no-underline transition-colors duration-150 hover:text-text hover:bg-bg-alt {isActive(
+						link.href,
+						$page.url.pathname
+					)
+						? 'text-text bg-bg-alt'
+						: ''}"
 					onclick={closeMobileMenu}
 				>
 					{link.label}
 				</a>
 			{/each}
+			<a
+				href="{base}/download"
+				class="nav-download mt-2 block rounded-md bg-accent py-3 px-4 text-base font-semibold text-bg no-underline"
+				onclick={closeMobileMenu}
+			>
+				Download
+			</a>
 		</div>
 	{/if}
 </nav>
@@ -97,5 +121,10 @@
 
 	.hamburger.open span:nth-child(3) {
 		transform: translateY(-6px) rotate(-45deg);
+	}
+
+	.nav-download,
+	.nav-download:hover {
+		color: var(--color-primary-text-on-accent);
 	}
 </style>

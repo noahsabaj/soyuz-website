@@ -10,10 +10,22 @@
 	import ComparisonTable from '$lib/components/ComparisonTable.svelte';
 
 	const toolkit = [
-		{ category: 'Primitives', count: 13, examples: 'sphere, box, cylinder, torus, capsule, cone, ellipsoid, plane, octahedron' },
-		{ category: 'Boolean Operations', count: 6, examples: 'union, subtract, intersect, smooth_union, smooth_subtract, smooth_intersect' },
+		{
+			category: 'Primitives',
+			count: 13,
+			examples: 'sphere, box, cylinder, torus, capsule, cone, ellipsoid, plane, octahedron'
+		},
+		{
+			category: 'Boolean Operations',
+			count: 6,
+			examples: 'union, subtract, intersect, smooth_union, smooth_subtract, smooth_intersect'
+		},
 		{ category: 'Modifiers', count: 4, examples: 'shell, round, onion, elongate' },
-		{ category: 'Transforms', count: 9, examples: 'translate, rotate_x/y/z, scale, mirror_x/y/z, symmetry_x/y/z' },
+		{
+			category: 'Transforms',
+			count: 9,
+			examples: 'translate, rotate_x/y/z, scale, mirror_x/y/z, symmetry_x/y/z'
+		},
 		{ category: 'Deformations', count: 2, examples: 'twist, bend' },
 		{ category: 'Repetition', count: 3, examples: 'repeat, repeat_limited, repeat_polar' }
 	];
@@ -24,48 +36,80 @@
 		{ feature: 'Real-time Preview', values: ['Yes (GPU)', 'No (CPU)', 'Varies', 'Yes'] },
 		{ feature: 'Price', values: ['Free / Open Source', 'Free / Open Source', 'Free', '$$$'] },
 		{ feature: 'Learning Curve', values: ['Medium', 'Medium', 'High', 'Very High'] },
-		{ feature: 'Export Formats', values: ['glTF, GLB, OBJ, STL', 'STL, OFF, AMF', 'Usually none', 'Everything'] },
+		{
+			feature: 'Export Formats',
+			values: ['glTF, GLB, OBJ, STL', 'STL, OFF, AMF', 'Usually none', 'Everything']
+		},
 		{ feature: 'GPU Acceleration', values: ['Yes (WGPU)', 'No', 'Rarely', 'Yes'] },
 		{ feature: 'Scripting', values: ['Rhai', 'OpenSCAD lang', 'Host language', 'VEX / Python'] }
 	];
-
 </script>
 
 <svelte:head>
 	<title>About - Soyuz</title>
-	<meta name="description" content="Learn about Soyuz Studio: a procedural 3D modeling tool powered by Signed Distance Fields. Create complex geometry with simple scripts." />
+	<meta
+		name="description"
+		content="Learn about Soyuz Studio: a procedural 3D modeling tool powered by Signed Distance Fields. Create complex geometry with simple scripts."
+	/>
 </svelte:head>
 
 <div class="about-page">
 	<!-- Section 1: Hero / Vision Statement -->
 	<section class="py-20 border-b-2 border-border">
 		<div class="container text-center">
-			<p class="font-mono text-xs uppercase tracking-widest text-accent mb-4">Procedural 3D Modeling</p>
-			<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">The Geometry of Possibility</h1>
+			<p class="font-mono text-xs uppercase tracking-widest text-accent mb-4">Soyuz Studio</p>
+			<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+				A workbench for procedural geometry
+			</h1>
 			<p class="text-xl md:text-2xl text-text-muted max-w-[700px] mx-auto mb-8">
-				Create 3D models with mathematics, not meshes.
+				Create 3D models with scripts, not manual mesh editing.
 			</p>
 			<p class="text-lg text-text-muted max-w-[600px] mx-auto">
-				Write a script. Get infinite variations. Soyuz transforms mathematical expressions into real-time 3D previews and production-ready meshes.
+				Write Rhai SDF scripts in Studio, preview the result interactively, and export meshes for
+				the rest of your pipeline.
 			</p>
 
 			<!-- Simple code-to-shape visualization -->
 			<div class="mt-12 flex justify-center">
 				<svg viewBox="0 0 340 110" class="w-full max-w-[340px]" aria-hidden="true">
 					<!-- Code block representation -->
-					<rect x="20" y="10" width="140" height="90" fill="none" stroke="#1a1a1a" stroke-width="2"/>
-					<text x="35" y="35" font-family="JetBrains Mono, monospace" font-size="11" fill="#5b7a69">sphere(0.5)</text>
-					<text x="35" y="53" font-family="JetBrains Mono, monospace" font-size="11" fill="#5c5c5c">.union(</text>
-					<text x="45" y="71" font-family="JetBrains Mono, monospace" font-size="11" fill="#5b7a69">box(0.3)</text>
-					<text x="35" y="89" font-family="JetBrains Mono, monospace" font-size="11" fill="#5c5c5c">)</text>
+					<rect
+						x="20"
+						y="10"
+						width="140"
+						height="90"
+						fill="none"
+						stroke="#1a1a1a"
+						stroke-width="2"
+					/>
+					<text x="35" y="35" font-family="JetBrains Mono, monospace" font-size="11" fill="#5b7a69"
+						>sphere(0.5)</text
+					>
+					<text x="35" y="53" font-family="JetBrains Mono, monospace" font-size="11" fill="#5c5c5c"
+						>.union(</text
+					>
+					<text x="45" y="71" font-family="JetBrains Mono, monospace" font-size="11" fill="#5b7a69"
+						>box(0.3)</text
+					>
+					<text x="35" y="89" font-family="JetBrains Mono, monospace" font-size="11" fill="#5c5c5c"
+						>)</text
+					>
 
 					<!-- Arrow -->
-					<path d="M 170 55 L 210 55" stroke="#1a1a1a" stroke-width="2" stroke-dasharray="4 4"/>
-					<polygon points="210,50 220,55 210,60" fill="#1a1a1a"/>
+					<path d="M 170 55 L 210 55" stroke="#1a1a1a" stroke-width="2" stroke-dasharray="4 4" />
+					<polygon points="210,50 220,55 210,60" fill="#1a1a1a" />
 
 					<!-- Output: sphere with box merged -->
-					<circle cx="280" cy="55" r="35" fill="none" stroke="#5b7a69" stroke-width="2"/>
-					<rect x="260" y="35" width="40" height="40" fill="none" stroke="#5b7a69" stroke-width="2"/>
+					<circle cx="280" cy="55" r="35" fill="none" stroke="#5b7a69" stroke-width="2" />
+					<rect
+						x="260"
+						y="35"
+						width="40"
+						height="40"
+						fill="none"
+						stroke="#5b7a69"
+						stroke-width="2"
+					/>
 				</svg>
 			</div>
 		</div>
@@ -74,24 +118,32 @@
 	<!-- Section 2: What is an SDF? -->
 	<section class="py-16 border-b-2 border-border">
 		<div class="container">
-			<h2 class="text-2xl md:text-3xl font-bold mb-8">Signed Distance Fields: The Mathematical Heart</h2>
+			<h2 class="text-2xl md:text-3xl font-bold mb-8">
+				Signed Distance Fields: The Mathematical Heart
+			</h2>
 
 			<!-- Beginner: The Simple Idea -->
 			<div class="mb-10">
 				<h3 class="text-lg font-semibold mb-4 text-accent">The Simple Idea</h3>
 				<p class="text-text-muted mb-6 max-w-[700px]">
-					An SDF (Signed Distance Function) answers a simple question: <strong>"How far is this point from the surface?"</strong>
+					An SDF (Signed Distance Function) answers a simple question: <strong
+						>"How far is this point from the surface?"</strong
+					>
 				</p>
 
 				<div class="grid md:grid-cols-2 gap-8 items-center">
 					<div class="flex flex-col gap-4">
 						<div class="flex items-center gap-3">
 							<span class="font-mono text-lg text-accent">+</span>
-							<span class="text-text-muted">Positive distance = point is <strong>outside</strong></span>
+							<span class="text-text-muted"
+								>Positive distance = point is <strong>outside</strong></span
+							>
 						</div>
 						<div class="flex items-center gap-3">
 							<span class="font-mono text-lg text-accent">-</span>
-							<span class="text-text-muted">Negative distance = point is <strong>inside</strong></span>
+							<span class="text-text-muted"
+								>Negative distance = point is <strong>inside</strong></span
+							>
 						</div>
 						<div class="flex items-center gap-3">
 							<span class="font-mono text-lg text-accent">0</span>
@@ -101,12 +153,16 @@
 
 					<!-- SDF visualization -->
 					<div class="flex justify-center">
-						<svg viewBox="0 0 200 200" class="w-full max-w-[200px]" aria-label="SDF distance field visualization">
+						<svg
+							viewBox="0 0 200 200"
+							class="w-full max-w-[200px]"
+							aria-label="SDF distance field visualization"
+						>
 							<!-- Distance rings -->
-							<circle cx="100" cy="100" r="80" fill="none" stroke="#d4d3cf" stroke-width="1"/>
-							<circle cx="100" cy="100" r="60" fill="none" stroke="#d4d3cf" stroke-width="1"/>
-							<circle cx="100" cy="100" r="40" fill="none" stroke="#5b7a69" stroke-width="2"/>
-							<circle cx="100" cy="100" r="20" fill="none" stroke="#d4d3cf" stroke-width="1"/>
+							<circle cx="100" cy="100" r="80" fill="none" stroke="#d4d3cf" stroke-width="1" />
+							<circle cx="100" cy="100" r="60" fill="none" stroke="#d4d3cf" stroke-width="1" />
+							<circle cx="100" cy="100" r="40" fill="none" stroke="#5b7a69" stroke-width="2" />
+							<circle cx="100" cy="100" r="20" fill="none" stroke="#d4d3cf" stroke-width="1" />
 
 							<!-- Labels -->
 							<text x="182" y="104" font-size="10" fill="#5c5c5c">+2</text>
@@ -115,11 +171,11 @@
 							<text x="118" y="104" font-size="10" fill="#5c5c5c">-1</text>
 
 							<!-- Center point -->
-							<circle cx="100" cy="100" r="3" fill="#1a1a1a"/>
+							<circle cx="100" cy="100" r="3" fill="#1a1a1a" />
 
 							<!-- Sample points -->
-							<circle cx="160" cy="100" r="4" fill="none" stroke="#1a1a1a" stroke-width="2"/>
-							<circle cx="80" cy="100" r="4" fill="#1a1a1a"/>
+							<circle cx="160" cy="100" r="4" fill="none" stroke="#1a1a1a" stroke-width="2" />
+							<circle cx="80" cy="100" r="4" fill="#1a1a1a" />
 						</svg>
 					</div>
 				</div>
@@ -151,7 +207,8 @@
 				</div>
 
 				<p class="text-sm text-text-subtle mt-4">
-					No polygon meshes. No vertex counts. Just pure mathematical expressions that scale to any resolution.
+					No polygon meshes. No vertex counts. Just pure mathematical expressions that scale to any
+					resolution.
 				</p>
 			</div>
 
@@ -172,7 +229,9 @@
 					/>
 					<div class="text-sm text-text-muted">
 						<p class="mb-2"><code class="text-accent">p</code> - The 3D point we're testing</p>
-						<p class="mb-2"><code class="text-accent">length(p)</code> - Distance from origin to point</p>
+						<p class="mb-2">
+							<code class="text-accent">length(p)</code> - Distance from origin to point
+						</p>
 						<p class="mb-2"><code class="text-accent">radius</code> - The sphere's radius</p>
 						<p>The result: positive outside, negative inside, zero on surface. That's it.</p>
 					</div>
@@ -190,7 +249,7 @@
 			</p>
 
 			<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-				{#each toolkit as item}
+				{#each toolkit as item (item.category)}
 					<div class="card p-4">
 						<div class="flex items-baseline gap-2 mb-2">
 							<span class="font-mono text-2xl font-bold text-accent">{item.count}</span>
@@ -212,7 +271,8 @@
 		<div class="container">
 			<h2 class="text-2xl md:text-3xl font-bold mb-4">Built for Modularity</h2>
 			<p class="text-text-muted mb-8 max-w-[600px]">
-				Soyuz is organized into focused, reusable crates. Each has a single responsibility, making the system easy to understand and extend.
+				Soyuz is organized into focused, reusable crates. Each has a single responsibility, making
+				the system easy to understand and extend.
 			</p>
 
 			<CrateArchitectureDiagram />
@@ -251,25 +311,33 @@
 			<div class="mb-10">
 				<h3 class="text-lg font-semibold mb-4 text-accent">How Raymarching Works</h3>
 				<p class="text-text-muted mb-6 max-w-[700px]">
-					Soyuz uses <strong>sphere tracing</strong>, a raymarching technique where the SDF value tells us the maximum safe distance to step:
+					Soyuz uses <strong>sphere tracing</strong>, a raymarching technique where the SDF value
+					tells us the maximum safe distance to step:
 				</p>
 
 				<div class="grid md:grid-cols-2 gap-8 items-center">
 					<div class="flex flex-col gap-4">
 						<p class="text-sm text-text-muted">
-							For each pixel, we cast a ray into the scene. At each step, we evaluate the SDF to get the distance to the nearest surface.
+							For each pixel, we cast a ray into the scene. At each step, we evaluate the SDF to get
+							the distance to the nearest surface.
 						</p>
 						<p class="text-sm text-text-muted">
-							<strong>Key insight:</strong> The SDF value is a guaranteed safe step size. If we're 2 units from any surface, we can safely step 2 units forward without missing anything.
+							<strong>Key insight:</strong> The SDF value is a guaranteed safe step size. If we're 2 units
+							from any surface, we can safely step 2 units forward without missing anything.
 						</p>
 						<p class="text-sm text-text-muted">
-							This makes raymarching incredibly efficient: large steps far from surfaces, tiny steps near them.
+							This makes raymarching incredibly efficient: large steps far from surfaces, tiny steps
+							near them.
 						</p>
 					</div>
 
 					<!-- Raymarching visualization -->
 					<div class="flex justify-center">
-						<svg viewBox="0 0 340 130" class="w-full max-w-[340px]" aria-label="Raymarching sphere tracing visualization">
+						<svg
+							viewBox="0 0 340 130"
+							class="w-full max-w-[340px]"
+							aria-label="Raymarching sphere tracing visualization"
+						>
 							<!--
 								Accurate sphere tracing visualization.
 								Key property: each step point is EXACTLY at the right edge of the previous circle.
@@ -297,52 +365,132 @@
 							-->
 
 							<!-- Ray line (behind everything) -->
-							<line x1="34" y1="65" x2="280" y2="65" stroke="#1a1a1a" stroke-width="1" stroke-dasharray="4 2"/>
+							<line
+								x1="34"
+								y1="65"
+								x2="280"
+								y2="65"
+								stroke="#1a1a1a"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
 
 							<!-- Surface (curved) - at approximately x=290 -->
-							<path d="M 290 20 Q 315 65 290 110" fill="none" stroke="#5b7a69" stroke-width="3"/>
+							<path d="M 290 20 Q 315 65 290 110" fill="none" stroke="#5b7a69" stroke-width="3" />
 							<text x="295" y="25" font-size="10" fill="#5b7a69">surface</text>
 
 							<!-- Step 0: Large initial sphere -->
-							<circle cx="30" cy="65" r="70" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
+							<circle
+								cx="30"
+								cy="65"
+								r="70"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
 
 							<!-- Step 1 -->
-							<circle cx="100" cy="65" r="50" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="100" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="100"
+								cy="65"
+								r="50"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="100" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Step 2 -->
-							<circle cx="150" cy="65" r="36" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="150" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="150"
+								cy="65"
+								r="36"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="150" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Step 3 -->
-							<circle cx="186" cy="65" r="26" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="186" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="186"
+								cy="65"
+								r="26"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="186" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Step 4 -->
-							<circle cx="212" cy="65" r="19" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="212" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="212"
+								cy="65"
+								r="19"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="212" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Step 5 -->
-							<circle cx="231" cy="65" r="14" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="231" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="231"
+								cy="65"
+								r="14"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="231" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Step 6 -->
-							<circle cx="245" cy="65" r="10" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="245" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="245"
+								cy="65"
+								r="10"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="245" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Step 7 -->
-							<circle cx="255" cy="65" r="7" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="255" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="255"
+								cy="65"
+								r="7"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="255" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Step 8 (final - very close to surface) -->
-							<circle cx="262" cy="65" r="5" fill="none" stroke="#d4d3cf" stroke-width="1" stroke-dasharray="4 2"/>
-							<circle cx="262" cy="65" r="3" fill="#5b7a69"/>
+							<circle
+								cx="262"
+								cy="65"
+								r="5"
+								fill="none"
+								stroke="#d4d3cf"
+								stroke-width="1"
+								stroke-dasharray="4 2"
+							/>
+							<circle cx="262" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Final contact point -->
-							<circle cx="267" cy="65" r="3" fill="#5b7a69"/>
+							<circle cx="267" cy="65" r="3" fill="#5b7a69" />
 
 							<!-- Ray origin (drawn last to be on top) -->
-							<circle cx="30" cy="65" r="5" fill="#1a1a1a"/>
+							<circle cx="30" cy="65" r="5" fill="#1a1a1a" />
 							<text x="22" y="95" font-size="10" fill="#5c5c5c">eye</text>
 						</svg>
 					</div>
@@ -399,8 +547,8 @@
 					/>
 
 					<p class="text-sm text-text-muted">
-						<strong>Optimizations:</strong> Distance-adaptive surface threshold, unrolled AO loops (3 samples),
-						adaptive shadow stepping, and pre-computed sin/cos at shader generation time.
+						<strong>Optimizations:</strong> Distance-adaptive surface threshold, unrolled AO loops (3
+						samples), adaptive shadow stepping, and pre-computed sin/cos at shader generation time.
 					</p>
 				</div>
 			</details>
@@ -439,9 +587,7 @@
 
 				<div class="card p-6">
 					<h3 class="font-semibold mb-2">Script-First Workflow</h3>
-					<p class="text-sm text-text-muted mb-3">
-						Everything is a text file:
-					</p>
+					<p class="text-sm text-text-muted mb-3">Everything is a text file:</p>
 					<ul class="text-xs text-text-subtle font-mono flex flex-col gap-1">
 						<li>Version control friendly (git diff works!)</li>
 						<li>Reproducible builds</li>
@@ -451,9 +597,7 @@
 
 				<div class="card p-6">
 					<h3 class="font-semibold mb-2">Tight Integration</h3>
-					<p class="text-sm text-text-muted mb-3">
-						Geometry and rendering are unified:
-					</p>
+					<p class="text-sm text-text-muted mb-3">Geometry and rendering are unified:</p>
 					<ul class="text-xs text-text-subtle font-mono flex flex-col gap-1">
 						<li>Lighting, materials, environment in scripts</li>
 						<li>Sun direction, fog, shadows configurable</li>
@@ -475,8 +619,8 @@
 			<ComparisonTable headers={comparisonHeaders} rows={comparisonRows} highlightColumn={1} />
 
 			<p class="text-xs text-text-subtle mt-4">
-				Note: Houdini is industry-standard for complex VFX work. OpenSCAD pioneered script-based CAD.
-				Soyuz aims to bring SDF-based modeling to a wider audience with modern tooling.
+				Note: Houdini is industry-standard for complex VFX work. OpenSCAD pioneered script-based
+				CAD. Soyuz aims to bring SDF-based modeling to a wider audience with modern tooling.
 			</p>
 		</div>
 	</section>
@@ -490,7 +634,9 @@
 				<div class="card p-6 text-center">
 					<div class="font-mono text-3xl font-bold text-accent mb-2">36</div>
 					<div class="text-sm text-text-muted">SDF operations</div>
-					<div class="text-xs text-text-subtle mt-1">12 primitives, 6 booleans, 9 transforms, more</div>
+					<div class="text-xs text-text-subtle mt-1">
+						12 primitives, 6 booleans, 9 transforms, more
+					</div>
 				</div>
 				<div class="card p-6 text-center">
 					<div class="font-mono text-3xl font-bold text-accent mb-2">4</div>

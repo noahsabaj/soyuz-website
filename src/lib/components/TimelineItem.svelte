@@ -22,7 +22,9 @@
 	{/if}
 
 	<!-- Dot marker -->
-	<div class="absolute left-0 top-1 w-6 h-6 bg-accent border-2 border-border flex items-center justify-center">
+	<div
+		class="absolute left-0 top-1 w-6 h-6 bg-accent border-2 border-border flex items-center justify-center"
+	>
 		<div class="w-2 h-2 bg-surface"></div>
 	</div>
 

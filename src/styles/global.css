@@ -1,73 +1,43 @@
-/* Soyuz Design System - Tailwind v4
-   Aesthetic: Developer tool + Neobrutalism + Technical docs
+/* Soyuz Graphite Design System - Tailwind v4
+   Aesthetic: procedural geometry, dark workbench, precise technical docs.
 */
 
-@import "tailwindcss";
-
-/* ========== Theme Configuration ========== */
-@theme {
-	/* Colors - Muted warm palette */
-	--color-bg: #f8f7f4;
-	--color-bg-alt: #efeee9;
-	--color-bg-code: #e8e6e1;
-	--color-surface: #ffffff;
-
-	--color-text: #1a1a1a;
-	--color-text-muted: #5c5c5c;
-	--color-text-subtle: #8a8a8a;
-
-	--color-border: #1a1a1a;
-	--color-border-light: #d4d3cf;
-
-	--color-accent: #5b7a69;
-	--color-accent-hover: #4a6455;
-	--color-accent-light: #e8eeeb;
-
-	--color-shadow: #1a1a1a;
-
-	/* Typography */
-	--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-	--font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
-
-	/* Shadows - Solid offset (neobrutalism) */
-	--shadow-sm: 2px 2px 0 #1a1a1a;
-	--shadow-md: 4px 4px 0 #1a1a1a;
-	--shadow-lg: 6px 6px 0 #1a1a1a;
-	--shadow-accent: 4px 4px 0 #5b7a69;
-
-	/* Custom breakpoints */
-	--breakpoint-xs: 480px;
-	--breakpoint-sm: 640px;
-	--breakpoint-md: 768px;
-	--breakpoint-lg: 900px;
-	--breakpoint-xl: 1100px;
-	--breakpoint-2xl: 1280px;
-}
+@import 'tailwindcss';
+@import './generated-theme.css';
 
 /* ========== Base Overrides ========== */
 html {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	background: var(--color-bg);
 }
 
 body {
 	font-family: var(--font-sans);
 	color: var(--color-text);
-	background-color: var(--color-bg);
+	background:
+		linear-gradient(var(--color-grid-line) 1px, transparent 1px),
+		linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px), var(--color-bg);
+	background-size: 40px 40px;
 	min-height: 100vh;
 }
 
 /* ========== Typography Base ========== */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-weight: 700;
-	line-height: 1.2;
-	letter-spacing: -0.02em;
+	line-height: 1.14;
+	letter-spacing: 0;
 }
 
 a {
 	color: var(--color-accent);
 	text-decoration: underline;
-	text-underline-offset: 2px;
+	text-underline-offset: 3px;
 	transition: color 0.15s ease;
 }
 
@@ -75,9 +45,8 @@ a:hover {
 	color: var(--color-accent-hover);
 }
 
-/* Links with explicit styling classes should override default */
 a.text-white {
-	color: white;
+	color: var(--color-text);
 }
 
 a.text-text {
@@ -99,58 +68,63 @@ a.no-underline {
 code {
 	font-family: var(--font-mono);
 	font-size: 0.9em;
+	color: var(--color-sdf);
 	background: var(--color-bg-code);
 	padding: 0.15em 0.4em;
-	border-radius: 2px;
+	border: 1px solid var(--color-border);
+	border-radius: 4px;
 }
 
 pre {
 	font-family: var(--font-mono);
 	background: var(--color-bg-code);
 	overflow-x: auto;
-	border: 2px solid var(--color-border);
+	border: 1px solid var(--color-border);
 }
 
 pre code {
 	background: none;
+	border: none;
 	padding: 0;
 }
 
-/* Allow pre elements to override background in specific contexts */
 pre.bg-transparent {
 	background: transparent;
 	border: none;
 }
 
 /* ========== Component Classes ========== */
-
-/* Buttons - Neobrutalist style */
 .btn {
 	@apply inline-flex items-center justify-center gap-2;
 	@apply font-sans text-sm font-semibold;
 	@apply py-3 px-5;
-	@apply border-2 border-border bg-surface text-text;
+	@apply border border-border bg-surface text-text;
 	@apply cursor-pointer no-underline;
-	@apply shadow-md;
-	@apply transition-all duration-100;
+	@apply shadow-sm;
+	@apply transition-all duration-150;
+	border-radius: 6px;
 }
 
 .btn:hover {
-	transform: translate(-2px, -2px);
-	@apply shadow-lg;
+	border-color: var(--color-accent);
+	background: var(--color-surface-raised);
+	box-shadow: var(--shadow-accent);
+	transform: translateY(-1px);
 }
 
 .btn:active {
-	transform: translate(2px, 2px);
-	box-shadow: none;
+	transform: translateY(0);
+	box-shadow: var(--shadow-sm);
 }
 
 .btn-primary {
-	@apply bg-accent text-white border-border;
+	@apply bg-accent border-accent;
+	color: var(--color-primary-text-on-accent);
 }
 
 .btn-primary:hover {
 	@apply bg-accent-hover;
+	color: var(--color-primary-text-on-accent);
 }
 
 .btn-ghost {
@@ -162,9 +136,9 @@ pre.bg-transparent {
 	transform: none;
 }
 
-/* Cards - Neobrutalist style */
 .card {
-	@apply bg-surface border-2 border-border p-6 shadow-md;
+	@apply bg-surface border border-border p-6 shadow-md;
+	border-radius: 8px;
 }
 
 .card-hover {
@@ -172,36 +146,61 @@ pre.bg-transparent {
 }
 
 .card-hover:hover {
-	transform: translate(-2px, -2px);
-	@apply shadow-lg;
+	border-color: var(--color-accent);
+	box-shadow: var(--shadow-accent);
+	transform: translateY(-2px);
 }
 
-/* Tags/Badges */
 .tag {
 	@apply inline-block font-mono text-xs font-medium;
 	@apply py-1 px-2;
-	@apply bg-bg-alt border border-border-light;
-	@apply uppercase tracking-wider;
+	@apply bg-accent-light border border-border-light text-text-muted;
+	@apply uppercase;
+	border-radius: 4px;
+	letter-spacing: 0.04em;
 }
 
-/* Dividers */
 .divider {
-	@apply h-0.5 bg-border border-none my-8;
+	@apply h-px bg-border border-none my-8;
 }
 
-/* Container */
 .container {
 	@apply max-w-[1200px] mx-auto px-6;
 }
 
-/* Prose width */
 .prose {
 	@apply max-w-[720px];
 }
 
+.soyuz-wordmark {
+	@apply inline-flex items-center gap-2 font-mono font-semibold text-text no-underline;
+}
+
+.soyuz-mark {
+	@apply inline-flex items-center justify-center;
+	width: 24px;
+	height: 24px;
+	border: 1px solid var(--color-border-light);
+	border-radius: 6px;
+	background: var(--color-bg-code);
+	color: var(--color-sdf);
+	overflow: hidden;
+}
+
+.soyuz-mark img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.soyuz-kicker {
+	@apply font-mono text-xs font-medium uppercase text-sdf;
+	letter-spacing: 0.08em;
+}
+
 /* ========== Selection ========== */
 ::selection {
-	@apply bg-accent text-white;
+	@apply bg-accent text-bg;
 }
 
 /* ========== Scrollbar ========== */
@@ -225,22 +224,22 @@ pre.bg-transparent {
 
 /* ========== Syntax Highlighting (CodeBlock) ========== */
 .code-block .keyword {
-	color: #7c6f9f;
+	color: var(--syntax-keyword);
 }
 
 .code-block .builtin {
-	color: #5b7a69;
+	color: var(--syntax-builtin);
 }
 
 .code-block .string {
-	color: #6a9955;
+	color: var(--syntax-string);
 }
 
 .code-block .number {
-	color: #b5734a;
+	color: var(--syntax-number);
 }
 
 .code-block .comment {
-	color: #8a8a8a;
+	color: var(--syntax-comment);
 	font-style: italic;
 }

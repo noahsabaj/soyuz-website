@@ -7,3 +7,10 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# Generated from ../soyuz/theme/soyuz-graphite.tokens.json
+src/styles/generated-theme.css
+src/lib/theme.generated.ts
+
+# Generated from ../soyuz/docs
+src/lib/docs.generated.ts

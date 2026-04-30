@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { soyuzTheme } from '$lib/theme.generated';
 
 	// Props
 	let {
@@ -209,73 +210,36 @@
 	function writeEnvUniforms() {
 		if (!device || !envUniformBuffer || !envDataView || envUniformsWritten) return;
 
+		const env = soyuzTheme.renderer.environment;
 		let offset = 0;
-		// sun_direction: vec3 (normalized)
-		const sunDir = normalize([0.5, 0.8, 0.3]);
-		envDataView.setFloat32(offset, sunDir[0], true);
-		offset += 4;
-		envDataView.setFloat32(offset, sunDir[1], true);
-		offset += 4;
-		envDataView.setFloat32(offset, sunDir[2], true);
-		offset += 4;
-		envDataView.setFloat32(offset, 1.2, true);
-		offset += 4; // sun_intensity
-		envDataView.setFloat32(offset, 1.0, true);
-		offset += 4; // sun_color.r
-		envDataView.setFloat32(offset, 0.95, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.9, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.3, true);
-		offset += 4; // ambient_intensity
-		envDataView.setFloat32(offset, 0.4, true);
-		offset += 4; // ambient_color
-		envDataView.setFloat32(offset, 0.5, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.7, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 32.0, true);
-		offset += 4; // material_shininess
-		envDataView.setFloat32(offset, 0.7, true);
-		offset += 4; // material_color
-		envDataView.setFloat32(offset, 0.7, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.7, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.5, true);
-		offset += 4; // specular_intensity
-		envDataView.setFloat32(offset, 0.8, true);
-		offset += 4; // sky_horizon
-		envDataView.setFloat32(offset, 0.85, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.9, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.0, true);
-		offset += 4; // fog_density
-		envDataView.setFloat32(offset, 0.4, true);
-		offset += 4; // sky_zenith
-		envDataView.setFloat32(offset, 0.6, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.9, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.5, true);
-		offset += 4; // ao_intensity
-		envDataView.setFloat32(offset, 0.8, true);
-		offset += 4; // fog_color
-		envDataView.setFloat32(offset, 0.85, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 0.9, true);
-		offset += 4;
-		envDataView.setFloat32(offset, 16.0, true);
-		offset += 4; // shadow_softness
-		envDataView.setFloat32(offset, 1.0, true);
-		offset += 4; // ao_enabled
-		envDataView.setFloat32(offset, 1.0, true);
-		offset += 4; // shadows_enabled
-		envDataView.setFloat32(offset, 0, true);
-		offset += 4; // _pad1
-		envDataView.setFloat32(offset, 0, true);
-		offset += 4; // _pad2
+		const writeFloat = (value: number) => {
+			envDataView!.setFloat32(offset, value, true);
+			offset += 4;
+		};
+		const writeVec3 = (values: readonly number[]) => {
+			writeFloat(values[0]);
+			writeFloat(values[1]);
+			writeFloat(values[2]);
+		};
+
+		writeVec3(normalize([...env.sunDirection]));
+		writeFloat(env.sunIntensity);
+		writeVec3(env.sunColor);
+		writeFloat(env.ambientIntensity);
+		writeVec3(env.ambientColor);
+		writeFloat(env.materialShininess);
+		writeVec3(env.materialColor);
+		writeFloat(env.specularIntensity);
+		writeVec3(env.skyHorizon);
+		writeFloat(env.fogDensity);
+		writeVec3(env.skyZenith);
+		writeFloat(env.aoIntensity);
+		writeVec3(env.fogColor);
+		writeFloat(env.shadowSoftness);
+		writeFloat(env.aoEnabled);
+		writeFloat(env.shadowsEnabled);
+		writeFloat(0); // _pad1
+		writeFloat(0); // _pad2
 
 		device.queue.writeBuffer(envUniformBuffer, 0, envArrayBuffer!);
 		envUniformsWritten = true;
@@ -394,7 +358,7 @@
 			colorAttachments: [
 				{
 					view: textureView,
-					clearValue: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 },
+					clearValue: soyuzTheme.renderer.clearValue,
 					loadOp: 'clear',
 					storeOp: 'store'
 				}
@@ -501,7 +465,7 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
-		background: #1a1a1a;
+		background: var(--renderer-bg);
 	}
 
 	canvas {
@@ -525,8 +489,8 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		background: rgba(26, 26, 26, 0.95);
-		color: #ff6b6b;
+		background: var(--renderer-overlay-bg);
+		color: var(--status-error-text);
 		padding: var(--space-4);
 		text-align: center;
 	}
@@ -547,7 +511,7 @@
 		margin-top: var(--space-2);
 		font-family: var(--font-mono);
 		font-size: var(--text-xs);
-		color: #ffaa88;
+		color: var(--renderer-error-detail);
 		max-width: 100%;
 		overflow-wrap: break-word;
 	}
@@ -565,7 +529,7 @@
 	}
 
 	.hint-list code {
-		background: rgba(255, 255, 255, 0.1);
+		background: var(--renderer-hint-code-bg);
 		padding: 0.1em 0.3em;
 		border-radius: 2px;
 		font-size: 0.9em;
@@ -577,7 +541,7 @@
 		left: 50%;
 		transform: translateX(-50%);
 		font-size: var(--text-xs);
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--renderer-control-text);
 		pointer-events: none;
 	}
 </style>

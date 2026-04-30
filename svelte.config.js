@@ -1,11 +1,18 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const projectDir = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
+		alias: {
+			'@soyuz-docs': path.resolve(projectDir, '../soyuz')
+		},
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
@@ -15,13 +22,6 @@ const config = {
 		}),
 		paths: {
 			base: process.env.NODE_ENV === 'production' ? '/soyuz-website' : ''
-		},
-		prerender: {
-			// Handle missing anchor IDs by logging a warning instead of failing
-			// This occurs when markdown content has links to headings that get slugified differently
-			handleMissingId: 'warn',
-			// Warn instead of error for 404s (static assets at root won't have base path)
-			handleHttpError: 'warn'
 		}
 	}
 };
