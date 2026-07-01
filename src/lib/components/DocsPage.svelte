@@ -13,16 +13,10 @@
 	let apiCategories = $derived(
 		page?.kind === 'api' ? (page.apiCategories ?? []).map((id) => getCategory(id)) : []
 	);
+	// Title and description for docs pages are set in `src/routes/docs/+layout.ts`
+	// (keyed by route id) and rendered by `+layout.svelte`, so there is a single
+	// source of truth and no per-page <svelte:head> here.
 </script>
-
-<svelte:head>
-	<title>{page?.title ?? 'Documentation'} - Soyuz</title>
-	<meta
-		name="description"
-		content={page?.description ??
-			'Documentation for Soyuz, a procedural 3D asset generation framework.'}
-	/>
-</svelte:head>
 
 {#if page}
 	{#if page.kind === 'markdown' && page.content}

@@ -44,14 +44,6 @@ body
 	];
 </script>
 
-<svelte:head>
-	<title>Soyuz Studio - Procedural 3D Workbench</title>
-	<meta
-		name="description"
-		content="Soyuz Studio is a procedural 3D workbench for writing Rhai SDF scripts, previewing geometry, and exporting production-ready meshes."
-	/>
-</svelte:head>
-
 <div>
 	<section class="border-b border-border bg-bg/95 py-14 lg:py-18">
 		<div class="container">

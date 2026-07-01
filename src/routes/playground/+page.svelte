@@ -20,6 +20,9 @@ body
 	let wasmReady = $state(false);
 	let showWgsl = $state(false);
 	let shaderError = $state('');
+	// 'unavailable' = no WebGPU/GPU (env issue, not the user's script); 'shader' = a
+	// real WGSL compile error. Drives whether the badge reads "Preview unavailable".
+	let shaderErrorKind = $state<'unavailable' | 'shader'>('shader');
 
 	// The ~2.4MB WASM compiler runs in a Web Worker so a pathological script can
 	// never freeze the tab (the main thread never blocks on compilation).
@@ -89,8 +92,9 @@ body
 		worker = null;
 	});
 
-	function handleShaderError(msg: string) {
+	function handleShaderError(msg: string, kind: 'unavailable' | 'shader' = 'shader') {
 		shaderError = msg;
+		shaderErrorKind = kind;
 	}
 
 	const examples = [
@@ -135,14 +139,6 @@ outer.subtract(inner)`
 		compile();
 	}
 </script>
-
-<svelte:head>
-	<title>Playground - Soyuz</title>
-	<meta
-		name="description"
-		content="Try Soyuz in your browser: write Rhai SDF scripts, compile with WebAssembly, and render geometry live with WebGPU."
-	/>
-</svelte:head>
 
 <div class="flex flex-col gap-4 max-w-[1600px] mx-auto p-4">
 	<header class="text-center">
@@ -199,6 +195,10 @@ outer.subtract(inner)`
 				<span class="font-semibold text-sm">3D Preview</span>
 				{#if error}
 					<span class="status-badge status-error text-xs py-1 px-2 font-medium">Script Error</span>
+				{:else if shaderError && shaderErrorKind === 'unavailable'}
+					<span class="status-badge status-loading text-xs py-1 px-2 font-medium"
+						>Preview unavailable</span
+					>
 				{:else if shaderError}
 					<span class="status-badge status-error text-xs py-1 px-2 font-medium">Shader Error</span>
 				{:else if wgslOutput}

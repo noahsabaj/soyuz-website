@@ -6,7 +6,10 @@
 	let {
 		wgslCode = '',
 		onError = () => {}
-	}: { wgslCode?: string; onError?: (msg: string) => void } = $props();
+	}: {
+		wgslCode?: string;
+		onError?: (msg: string, kind?: 'unavailable' | 'shader') => void;
+	} = $props();
 
 	// State
 	let canvas: HTMLCanvasElement;
@@ -54,7 +57,7 @@
 		if (!navigator.gpu) {
 			gpuSupported = false;
 			errorMessage = 'WebGPU is not supported in this browser';
-			onError(errorMessage);
+			onError(errorMessage, 'unavailable');
 			return;
 		}
 
@@ -73,8 +76,13 @@
 			startTime = performance.now();
 			render();
 		} catch (e) {
+			// The adapter/device request failed: WebGPU exists but there's no usable
+			// GPU here (common on Linux Chrome without Vulkan). Treat it like
+			// "unsupported" so the browser-hint overlay shows instead of a false
+			// "Shader Error" — the compiled WGSL is still available in the panel.
+			gpuSupported = false;
 			errorMessage = e instanceof Error ? e.message : 'Failed to initialize WebGPU';
-			onError(errorMessage);
+			onError(errorMessage, 'unavailable');
 		}
 	});
 
@@ -207,7 +215,7 @@
 			errorMessage = '';
 		} catch (e) {
 			errorMessage = e instanceof Error ? e.message : 'Shader compilation failed';
-			onError(errorMessage);
+			onError(errorMessage, 'shader');
 			pipeline = null;
 		}
 	}
@@ -434,19 +442,23 @@
 <div class="renderer-container">
 	{#if !gpuSupported}
 		<div class="error-overlay">
-			<p>WebGPU is not available</p>
-			<p class="hint">WebGPU requires a compatible browser:</p>
+			<p>Preview needs WebGPU</p>
+			<p class="hint">
+				The script compiled — only the 3D render needs a GPU via WebGPU, which isn't available here.
+				The generated shader is in the WGSL panel. To enable the preview:
+			</p>
 			<ul class="hint-list">
-				<li><strong>Chrome/Edge 113+</strong> (Windows/macOS)</li>
+				<li><strong>Chrome/Edge 113+</strong> with hardware acceleration enabled</li>
 				<li>
-					<strong>Chrome on Linux</strong>: Enable via
-					<code>chrome://flags/#enable-unsafe-webgpu</code>
+					<strong>Chrome on Linux</strong>: check <code>chrome://gpu</code>; if needed enable
+					<code>chrome://flags/#enable-unsafe-webgpu</code> and install Vulkan drivers
 				</li>
 				<li>
-					<strong>Firefox Nightly</strong>: Enable via <code>about:config</code> →
+					<strong>Firefox Nightly</strong>: <code>about:config</code> →
 					<code>dom.webgpu.enabled</code>
 				</li>
 			</ul>
+			{#if errorMessage}<p class="error-detail">{errorMessage}</p>{/if}
 		</div>
 	{:else if errorMessage}
 		<div class="error-overlay">

@@ -75,14 +75,6 @@
 	];
 </script>
 
-<svelte:head>
-	<title>About - Soyuz</title>
-	<meta
-		name="description"
-		content="Learn about Soyuz Studio: a procedural 3D modeling tool powered by Signed Distance Fields. Create complex geometry with simple scripts."
-	/>
-</svelte:head>
-
 <div class="about-page">
 	<!-- Section 1: Hero / Vision Statement -->
 	<section class="py-20 border-b-2 border-border">

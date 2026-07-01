@@ -34,9 +34,14 @@
 			subtitle: 'Ubuntu, Debian, Mint',
 			filename: `soyuz-${version}-linux-x86_64.deb`
 		},
+		rpm: {
+			label: '.rpm Installer',
+			subtitle: 'Fedora, RHEL, openSUSE',
+			filename: `soyuz-${version}-linux-x86_64.rpm`
+		},
 		appimage: {
 			label: 'AppImage',
-			subtitle: 'Other distros',
+			subtitle: 'Other distros (incl. Fedora)',
 			filename: `soyuz-studio-${version}-linux-x86_64.AppImage`
 		}
 	});
@@ -102,14 +107,6 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Download Soyuz Studio - Soyuz</title>
-	<meta
-		name="description"
-		content="Download Soyuz Studio, the desktop workbench for procedural 3D asset generation, for Linux, macOS, and Windows."
-	/>
-</svelte:head>
-
 <div class="container py-10 px-6 pb-16">
 	<header class="mb-8 text-center">
 		<p class="soyuz-kicker mb-3">Desktop Workbench</p>
@@ -132,6 +129,7 @@
 		{:else if detectedPlatform === 'linux'}
 			<p class="mb-2 text-xl font-semibold">Download for Linux</p>
 			{@const debAsset = getAsset(linuxDownloads.deb.filename)}
+			{@const rpmAsset = getAsset(linuxDownloads.rpm.filename)}
 			{@const appImageAsset = getAsset(linuxDownloads.appimage.filename)}
 			<div class="flex flex-wrap justify-center gap-4">
 				<a
@@ -148,6 +146,23 @@
 							>{isMissingAsset(linuxDownloads.deb.filename)
 								? 'Open releases'
 								: linuxDownloads.deb.subtitle}</span
+						>
+					</span>
+				</a>
+				<a
+					href={rpmAsset.browserDownloadUrl}
+					class="btn px-6 py-4 text-base"
+					aria-label={isMissingAsset(linuxDownloads.rpm.filename)
+						? 'Open Soyuz releases for Linux rpm installer'
+						: 'Download Linux rpm installer'}
+				>
+					<span class="flex items-center justify-center"><LinuxIcon size={28} /></span>
+					<span class="flex flex-col text-left">
+						<span>{linuxDownloads.rpm.label}</span>
+						<span class="text-xs opacity-75"
+							>{isMissingAsset(linuxDownloads.rpm.filename)
+								? 'Open releases'
+								: linuxDownloads.rpm.subtitle}</span
 						>
 					</span>
 				</a>
@@ -170,8 +185,8 @@
 				</a>
 			</div>
 			<p class="mt-3 max-w-[560px] text-center text-sm text-text-muted">
-				.deb: double-click to install. AppImage: make executable, then run. Missing artifacts link
-				to the release page instead of a broken file.
+				.deb / .rpm: double-click to install. AppImage: make executable, then run. Missing artifacts
+				link to the release page instead of a broken file.
 			</p>
 		{:else if detectedPlatform !== 'unknown'}
 			{@const Icon = downloads[detectedPlatform].icon}
@@ -231,7 +246,13 @@
 							Or from terminal: <code>sudo dpkg -i soyuz-studio_*.deb</code>
 						</p>
 
-						<h4 class="mt-2 text-sm text-text-muted">AppImage (Other distros)</h4>
+						<h4 class="mt-2 text-sm text-text-muted">.rpm Installer (Fedora/RHEL/openSUSE)</h4>
+						<p>Double-click the .rpm file to open the package installer, then install.</p>
+						<p class="border-l-[3px] border-accent bg-surface p-3 text-sm text-text-muted">
+							Or from terminal: <code>sudo dnf install ./soyuz-*.rpm</code>
+						</p>
+
+						<h4 class="mt-2 text-sm text-text-muted">AppImage (Other distros, incl. Fedora)</h4>
 						<p>Make the file executable, then run it directly.</p>
 						<p class="border-l-[3px] border-accent bg-surface p-3 text-sm text-text-muted">
 							Or from terminal: <code>chmod +x *.AppImage && ./*.AppImage</code>
