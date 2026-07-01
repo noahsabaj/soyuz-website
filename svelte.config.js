@@ -16,7 +16,10 @@ const config = {
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: undefined,
+			// Emit a 404.html SPA shell so GitHub Pages serves the branded
+			// src/routes/+error.svelte for unknown URLs. Every real route is still
+			// prerendered; only genuinely-missing paths fall back to this page.
+			fallback: '404.html',
 			precompress: false,
 			strict: true
 		}),

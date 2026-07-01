@@ -26,19 +26,61 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v4
 
-      - name: Checkout soyuz repo (for docs import)
+      - name: Checkout soyuz repo (for docs import + wasm build)
         run: git clone --depth 1 https://github.com/noahsabaj/soyuz.git ../soyuz
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: '22'
+          cache: 'npm'
+
+      # Rust toolchain + wasm-pack are needed to (a) rebuild the playground WASM
+      # from the freshly cloned soyuz source so the committed binary can never go
+      # stale, and (b) run the xtask-based check:docs / check:theme validations.
+      - name: Setup Rust (wasm target)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ../soyuz
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
       - name: Install dependencies
-        run: bun install
+        run: npm ci
+
+      # Rebuild the playground WASM from the soyuz source and overwrite the
+      # committed glue, so the deployed compiler always matches the actual soyuz
+      # API (this is what closes the "stale committed wasm" gap). Only the
+      # wasm-pack-generated files are copied; env.ts / index.ts / package.json /
+      # .gitignore are the website's own hand-written wrappers and are left
+      # untouched.
+      - name: Rebuild playground WASM from soyuz source
+        env:
+          # getrandom 0.3 (pulled in transitively via rhai's ahash) requires the
+          # wasm_js backend to be selected explicitly for wasm32-unknown-unknown.
+          RUSTFLAGS: '--cfg getrandom_backend="wasm_js"'
+        run: |
+          wasm-pack build ../soyuz/crates/soyuz-wasm --target web
+          pkg=../soyuz/crates/soyuz-wasm/pkg
+          cp "$pkg/soyuz_wasm.js" src/lib/wasm/soyuz_wasm.js
+          cp "$pkg/soyuz_wasm.d.ts" src/lib/wasm/soyuz_wasm.d.ts
+          cp "$pkg/soyuz_wasm_bg.wasm" src/lib/wasm/soyuz_wasm_bg.wasm
+          cp "$pkg/soyuz_wasm_bg.wasm.d.ts" src/lib/wasm/soyuz_wasm_bg.wasm.d.ts
+
+      # Validate the committed website artifacts (API docs manifest, generated
+      # docs/theme, TypeScript types) against the soyuz workspace and run the
+      # doc-snippet tests. Fails the deploy if anything has drifted out of date.
+      - name: Validate against soyuz workspace
+        run: npm run check
 
       - name: Build site
-        run: bun run build
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

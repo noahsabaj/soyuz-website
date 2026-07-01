@@ -21,16 +21,18 @@
 	let detectedPlatform = $state<Platform>('unknown');
 
 	const version = $derived(releaseInfo?.version ?? 'v0.0.0');
-	const versionClean = $derived(releaseInfo?.versionClean ?? '0.0.0');
 	const releaseUrl = $derived(
 		releaseInfo?.releaseUrl ?? 'https://github.com/noahsabaj/soyuz/releases'
 	);
 
+	// Filenames must match the assets produced by soyuz's release.yml exactly.
+	// Every artifact is named from the git tag (`version`, e.g. v0.7.0); the
+	// release workflow builds them with `dx bundle` so they ship styled.
 	const linuxDownloads = $derived({
 		deb: {
 			label: '.deb Installer',
 			subtitle: 'Ubuntu, Debian, Mint',
-			filename: `soyuz-studio_${versionClean}-1_amd64.deb`
+			filename: `soyuz-${version}-linux-x86_64.deb`
 		},
 		appimage: {
 			label: 'AppImage',
@@ -50,7 +52,7 @@
 		},
 		macos: {
 			label: 'Download for macOS',
-			filename: () => `soyuz-${version}-macos-universal.dmg`,
+			filename: () => `soyuz-${version}-macos-aarch64.dmg`,
 			icon: AppleIcon
 		},
 		windows: {
@@ -102,6 +104,10 @@
 
 <svelte:head>
 	<title>Download Soyuz Studio - Soyuz</title>
+	<meta
+		name="description"
+		content="Download Soyuz Studio, the desktop workbench for procedural 3D asset generation, for Linux, macOS, and Windows."
+	/>
 </svelte:head>
 
 <div class="container py-10 px-6 pb-16">

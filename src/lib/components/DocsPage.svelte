@@ -17,6 +17,11 @@
 
 <svelte:head>
 	<title>{page?.title ?? 'Documentation'} - Soyuz</title>
+	<meta
+		name="description"
+		content={page?.description ??
+			'Documentation for Soyuz, a procedural 3D asset generation framework.'}
+	/>
 </svelte:head>
 
 {#if page}

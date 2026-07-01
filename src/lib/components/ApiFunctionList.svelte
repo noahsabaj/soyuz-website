@@ -4,17 +4,12 @@
 
 	interface Props {
 		categories: ApiCategory[];
-		intro?: string;
 	}
 
-	let { categories, intro = '' }: Props = $props();
+	let { categories }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-8">
-	{#if intro}
-		<p class="text-lg text-text-muted">{intro}</p>
-	{/if}
-
 	{#each categories as category (category.id)}
 		<section id={category.id} class="flex flex-col gap-4 scroll-mt-4">
 			<h2 class="text-2xl mb-0 pb-2 border-b-2 border-border">{category.title}</h2>

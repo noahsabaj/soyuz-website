@@ -8,27 +8,57 @@
 	import CodeBlock from '$lib/components/CodeBlock.svelte';
 	import CrateArchitectureDiagram from '$lib/components/CrateArchitectureDiagram.svelte';
 	import ComparisonTable from '$lib/components/ComparisonTable.svelte';
+	import { getCategory } from '$lib/apiManifest';
+
+	// Counts are derived from SOYUZ_API.json (via apiManifest) so they can never
+	// drift from the real API. The manifest's "modifiers" category bundles
+	// modifiers, deformations, and repetition; we split it back out here for
+	// presentation, deriving each subgroup from the manifest's function names.
+	const modifierFns = getCategory('modifiers').functions.map((fn) => fn.name);
+	const deformationNames = modifierFns.filter((name) =>
+		['twist', 'bend', 'displace'].includes(name)
+	);
+	const repetitionNames = modifierFns.filter((name) =>
+		['repeat', 'repeat_limited', 'repeat_polar'].includes(name)
+	);
+	const pureModifierNames = modifierFns.filter(
+		(name) => !deformationNames.includes(name) && !repetitionNames.includes(name)
+	);
+
+	const primitiveCount = getCategory('primitives').functions.length;
+	const booleanCount = getCategory('operations').functions.length;
+	const transformCount = getCategory('transforms').functions.length;
 
 	const toolkit = [
 		{
 			category: 'Primitives',
-			count: 13,
-			examples: 'sphere, box, cylinder, torus, capsule, cone, ellipsoid, plane, octahedron'
+			count: primitiveCount,
+			examples: 'sphere, cube, cylinder, torus, capsule, cone, ellipsoid, plane, octahedron'
 		},
 		{
 			category: 'Boolean Operations',
-			count: 6,
-			examples: 'union, subtract, intersect, smooth_union, smooth_subtract, smooth_intersect'
+			count: booleanCount,
+			examples: 'union, subtract, intersect, smooth_union, smooth_subtract, smooth_intersect, xor'
 		},
-		{ category: 'Modifiers', count: 4, examples: 'shell, round, onion, elongate' },
+		{
+			category: 'Modifiers',
+			count: pureModifierNames.length,
+			examples: 'shell, hollow, round, onion, elongate'
+		},
 		{
 			category: 'Transforms',
-			count: 9,
-			examples: 'translate, rotate_x/y/z, scale, mirror_x/y/z, symmetry_x/y/z'
+			count: transformCount,
+			examples: 'translate, translate_x/y/z, rotate_x/y/z, scale, mirror_x/y/z, symmetry_x/y/z'
 		},
-		{ category: 'Deformations', count: 2, examples: 'twist, bend' },
-		{ category: 'Repetition', count: 3, examples: 'repeat, repeat_limited, repeat_polar' }
+		{ category: 'Deformations', count: deformationNames.length, examples: 'twist, bend, displace' },
+		{
+			category: 'Repetition',
+			count: repetitionNames.length,
+			examples: 'repeat, repeat_limited, repeat_polar'
+		}
 	];
+
+	const totalOperations = toolkit.reduce((sum, item) => sum + item.count, 0);
 
 	const comparisonHeaders = ['Feature', 'Soyuz', 'OpenSCAD', 'SDF Libraries', 'Houdini'];
 	const comparisonRows = [
@@ -89,7 +119,7 @@
 						>.union(</text
 					>
 					<text x="45" y="71" font-family="JetBrains Mono, monospace" font-size="11" fill="#5b7a69"
-						>box(0.3)</text
+						>cube(0.3)</text
 					>
 					<text x="35" y="89" font-family="JetBrains Mono, monospace" font-size="11" fill="#5c5c5c"
 						>)</text
@@ -261,7 +291,8 @@
 			</div>
 
 			<p class="text-sm text-text-subtle mt-6">
-				Total: <strong>37 operations</strong> that can be combined infinitely through method chaining.
+				Total: <strong>{totalOperations} operations</strong> that can be combined infinitely through method
+				chaining.
 			</p>
 		</div>
 	</section>
@@ -625,17 +656,17 @@
 		</div>
 	</section>
 
-	<!-- Section 10: Performance -->
+	<!-- Section 8: Performance -->
 	<section class="py-16">
 		<div class="container">
 			<h2 class="text-2xl md:text-3xl font-bold mb-8">Performance Characteristics</h2>
 
 			<div class="grid sm:grid-cols-3 gap-6 mb-10">
 				<div class="card p-6 text-center">
-					<div class="font-mono text-3xl font-bold text-accent mb-2">36</div>
+					<div class="font-mono text-3xl font-bold text-accent mb-2">{totalOperations}</div>
 					<div class="text-sm text-text-muted">SDF operations</div>
 					<div class="text-xs text-text-subtle mt-1">
-						12 primitives, 6 booleans, 9 transforms, more
+						{primitiveCount} primitives, {booleanCount} booleans, {transformCount} transforms, more
 					</div>
 				</div>
 				<div class="card p-6 text-center">

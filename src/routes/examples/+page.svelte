@@ -168,6 +168,10 @@ donut.smooth_union(frosting, 0.05)`
 
 <svelte:head>
 	<title>Examples - Soyuz</title>
+	<meta
+		name="description"
+		content="Browse example Soyuz scripts, from gears to organic shapes, and learn procedural 3D modeling with Signed Distance Fields."
+	/>
 </svelte:head>
 
 <div class="container py-10 px-6 pb-16">
