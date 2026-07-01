@@ -1,12 +1,7 @@
-<script lang="ts">
+<script lang="ts" module>
+	import { Marked, Renderer } from 'marked';
+	import DOMPurify from 'isomorphic-dompurify';
 	import { allFunctions } from '$lib/apiManifest';
-	import { marked } from 'marked';
-
-	interface Props {
-		content: string;
-	}
-
-	let { content }: Props = $props();
 
 	function escapeRegExp(value: string): string {
 		return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -76,14 +71,17 @@
 		return result;
 	}
 
-	// Configure marked for our use case
-	marked.setOptions({
+	// Single Marked instance, configured once when this module is first evaluated.
+	// Using a local `new Marked()` instance (instead of the global `marked` singleton)
+	// means renderers are not re-registered / shared state is not mutated on every
+	// component instantiation as the user navigates between doc pages.
+	const markedInstance = new Marked({
 		gfm: true,
 		breaks: false
 	});
 
 	// Custom renderer for code blocks with syntax highlighting
-	const renderer = new marked.Renderer();
+	const renderer = new Renderer();
 
 	renderer.code = ({ text, lang }: { text: string; lang?: string }) => {
 		const language = lang || '';
@@ -93,9 +91,11 @@
 				? highlightRhai(text)
 				: text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+		// Escape the fence info string before interpolating it into markup.
+		const safeLang = escapeHtml(language);
 		return `<div class="code-block-wrapper">
-			${language ? `<div class="code-lang">${language}</div>` : ''}
-			<pre class="code-block"><code class="language-${language}">${highlightedCode}</code></pre>
+			${language ? `<div class="code-lang">${safeLang}</div>` : ''}
+			<pre class="code-block"><code class="language-${safeLang}">${highlightedCode}</code></pre>
 		</div>`;
 	};
 
@@ -111,9 +111,24 @@
 		return `<h${depth} id="${id}">${escapeHtml(text)}</h${depth}>`;
 	};
 
-	marked.use({ renderer });
+	markedInstance.use({ renderer });
 
-	let html = $derived(marked(content) as string);
+	// Sanitize the generated HTML before it is injected via {@html}.
+	// isomorphic-dompurify works both in the browser and during SSR/prerender.
+	function renderMarkdown(markdown: string): string {
+		const rawHtml = markedInstance.parse(markdown) as string;
+		return DOMPurify.sanitize(rawHtml);
+	}
+</script>
+
+<script lang="ts">
+	interface Props {
+		content: string;
+	}
+
+	let { content }: Props = $props();
+
+	let html = $derived(renderMarkdown(content));
 </script>
 
 <div class="markdown-content">

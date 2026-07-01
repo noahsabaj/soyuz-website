@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/environment';
 	import WebGPURenderer from '$lib/components/WebGPURenderer.svelte';
+	import type { CompileResponse } from '$lib/wasm/compiler.worker';
 
 	let code = $state(`// Create a simple barrel shape
 let body = cylinder(0.5, 1.0);
@@ -19,39 +21,73 @@ body
 	let showWgsl = $state(false);
 	let shaderError = $state('');
 
-	let compileToWgsl: ((code: string) => string) | null = null;
+	// The ~2.4MB WASM compiler runs in a Web Worker so a pathological script can
+	// never freeze the tab (the main thread never blocks on compilation).
+	// See src/lib/wasm/compiler.worker.ts.
+	let worker: Worker | null = null;
 
-	onMount(async () => {
+	// Monotonic request id. Each compile() bumps it; the worker echoes it back.
+	// Any response whose id is older than `latestRequestId` was superseded by a
+	// newer keystroke and is ignored, so a slow compile can't clobber fresh output.
+	let requestId = 0;
+	let latestRequestId = 0;
+
+	// Debounce compile-on-keystroke to coalesce bursts of typing.
+	let compileTimer: ReturnType<typeof setTimeout> | undefined;
+
+	onMount(() => {
+		// Worker is client-only; never construct it during SSR/prerender.
+		if (!browser) return;
 		try {
-			const wasm = await import('$lib/wasm');
-			await wasm.initWasm();
-			compileToWgsl = wasm.compile_to_wgsl;
-			wasmReady = true;
+			worker = new Worker(new URL('../../lib/wasm/compiler.worker.ts', import.meta.url), {
+				type: 'module'
+			});
+			worker.onmessage = (event: MessageEvent<CompileResponse>) => {
+				const { id, wgsl, error: compileError } = event.data;
+				// Drop stale responses superseded by a newer request.
+				if (id !== latestRequestId) return;
+				// First response means the worker finished initializing the WASM module.
+				wasmReady = true;
+				isLoading = false;
+				if (compileError) {
+					error = compileError;
+					wgslOutput = '';
+				} else {
+					error = '';
+					shaderError = '';
+					wgslOutput = wgsl;
+				}
+			};
+			worker.onerror = () => {
+				error = 'Failed to load WASM compiler worker';
+				isLoading = false;
+			};
 			compile();
 		} catch (e) {
 			error = `Failed to load WASM module: ${e}`;
+			isLoading = false;
 		}
-		isLoading = false;
 	});
 
 	function compile() {
-		if (!compileToWgsl) return;
-
-		error = '';
-		shaderError = '';
-		try {
-			wgslOutput = compileToWgsl(code);
-		} catch (e) {
-			error = e instanceof Error ? e.message : String(e);
-			wgslOutput = '';
-		}
+		if (!worker) return;
+		const id = ++requestId;
+		latestRequestId = id;
+		worker.postMessage({ id, code });
 	}
 
 	function handleInput(event: Event) {
 		const target = event.target as HTMLTextAreaElement;
 		code = target.value;
-		compile();
+		clearTimeout(compileTimer);
+		compileTimer = setTimeout(compile, 200);
 	}
+
+	onDestroy(() => {
+		clearTimeout(compileTimer);
+		worker?.terminate();
+		worker = null;
+	});
 
 	function handleShaderError(msg: string) {
 		shaderError = msg;
@@ -102,6 +138,10 @@ outer.subtract(inner)`
 
 <svelte:head>
 	<title>Playground - Soyuz</title>
+	<meta
+		name="description"
+		content="Try Soyuz in your browser: write Rhai SDF scripts, compile with WebAssembly, and render geometry live with WebGPU."
+	/>
 </svelte:head>
 
 <div class="flex flex-col gap-4 max-w-[1600px] mx-auto p-4">

@@ -18,8 +18,5 @@ export default defineConfig({
 			// Allow serving files from the parent soyuz directory
 			allow: ['..']
 		}
-	},
-	optimizeDeps: {
-		exclude: ['soyuz_wasm']
 	}
 });

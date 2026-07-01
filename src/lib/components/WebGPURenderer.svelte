@@ -85,6 +85,11 @@
 		resizeObserver?.disconnect();
 		uniformBuffer?.destroy();
 		envUniformBuffer?.destroy();
+		// Release the GPUDevice so it isn't leaked across remount cycles (e.g. the
+		// playground error <-> fix loop). destroy() is a no-op if already destroyed,
+		// and the optional chain guards the not-yet-initialized case.
+		device?.destroy();
+		device = null;
 	});
 
 	function setupResizeObserver() {
