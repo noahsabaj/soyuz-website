@@ -17,7 +17,8 @@
 		| 'soyuz-script'
 		| 'soyuz-wasm'
 		| 'soyuz-engine'
-		| 'soyuz-app';
+		| 'soyuz-app'
+		| 'soyuz-mcp';
 
 	const crateDescriptions: Record<CrateName, { description: string }> = {
 		'soyuz-math': {
@@ -44,6 +45,9 @@
 		},
 		'soyuz-app': {
 			description: 'Dioxus-based desktop IDE with code editor and 3D preview.'
+		},
+		'soyuz-mcp': {
+			description: 'MCP server — exposes Soyuz to AI agents over stdio.'
 		}
 	};
 
@@ -56,7 +60,8 @@
 		'soyuz-script': ['soyuz-core', 'soyuz-sdf', 'soyuz-math'],
 		'soyuz-wasm': ['soyuz-script', 'soyuz-sdf'],
 		'soyuz-engine': ['soyuz-render', 'soyuz-script', 'soyuz-core', 'soyuz-sdf'],
-		'soyuz-app': ['soyuz-engine', 'soyuz-core', 'soyuz-script']
+		'soyuz-app': ['soyuz-engine', 'soyuz-core', 'soyuz-script'],
+		'soyuz-mcp': ['soyuz-engine', 'soyuz-script', 'soyuz-render', 'soyuz-core', 'soyuz-sdf']
 	};
 
 	// Compute reverse dependencies (who depends on this crate)
@@ -68,7 +73,8 @@
 		'soyuz-script': [],
 		'soyuz-wasm': [],
 		'soyuz-engine': [],
-		'soyuz-app': []
+		'soyuz-app': [],
+		'soyuz-mcp': []
 	};
 
 	for (const [crate, deps] of Object.entries(dependsOn) as [CrateName, CrateName[]][]) {
@@ -92,8 +98,8 @@
 
 <div class="flex flex-col gap-6">
 	<svg
-		viewBox="0 0 640 540"
-		class="w-full max-w-[640px] mx-auto"
+		viewBox="0 0 800 540"
+		class="w-full max-w-[800px] mx-auto"
 		role="img"
 		aria-label="Soyuz crate dependency diagram"
 	>
@@ -142,6 +148,57 @@
 			stroke-width={isConnectionHighlighted('soyuz-app', 'soyuz-script') ? 2.5 : 1.5}
 			fill="none"
 			marker-end={isConnectionHighlighted('soyuz-app', 'soyuz-script')
+				? 'url(#arrowhead-highlight)'
+				: 'url(#arrowhead)'}
+		/>
+
+		<!-- soyuz-mcp dependencies -->
+		<line
+			x1="630"
+			y1="50"
+			x2="390"
+			y2="110"
+			stroke={isConnectionHighlighted('soyuz-mcp', 'soyuz-engine') ? highlightColor : lineColor}
+			stroke-width={isConnectionHighlighted('soyuz-mcp', 'soyuz-engine') ? 2.5 : 1.5}
+			marker-end={isConnectionHighlighted('soyuz-mcp', 'soyuz-engine')
+				? 'url(#arrowhead-highlight)'
+				: 'url(#arrowhead)'}
+		/>
+		<line
+			x1="700"
+			y1="50"
+			x2="540"
+			y2="180"
+			stroke={isConnectionHighlighted('soyuz-mcp', 'soyuz-script') ? highlightColor : lineColor}
+			stroke-width={isConnectionHighlighted('soyuz-mcp', 'soyuz-script') ? 2.5 : 1.5}
+			marker-end={isConnectionHighlighted('soyuz-mcp', 'soyuz-script')
+				? 'url(#arrowhead-highlight)'
+				: 'url(#arrowhead)'}
+		/>
+		<path
+			d="M 620 25 Q 190 55, 150 180"
+			stroke={isConnectionHighlighted('soyuz-mcp', 'soyuz-render') ? highlightColor : lineColor}
+			stroke-width={isConnectionHighlighted('soyuz-mcp', 'soyuz-render') ? 2.5 : 1.5}
+			fill="none"
+			marker-end={isConnectionHighlighted('soyuz-mcp', 'soyuz-render')
+				? 'url(#arrowhead-highlight)'
+				: 'url(#arrowhead)'}
+		/>
+		<path
+			d="M 655 50 Q 370 140, 210 300"
+			stroke={isConnectionHighlighted('soyuz-mcp', 'soyuz-core') ? highlightColor : lineColor}
+			stroke-width={isConnectionHighlighted('soyuz-mcp', 'soyuz-core') ? 2.5 : 1.5}
+			fill="none"
+			marker-end={isConnectionHighlighted('soyuz-mcp', 'soyuz-core')
+				? 'url(#arrowhead-highlight)'
+				: 'url(#arrowhead)'}
+		/>
+		<path
+			d="M 730 50 Q 770 300, 390 400"
+			stroke={isConnectionHighlighted('soyuz-mcp', 'soyuz-sdf') ? highlightColor : lineColor}
+			stroke-width={isConnectionHighlighted('soyuz-mcp', 'soyuz-sdf') ? 2.5 : 1.5}
+			fill="none"
+			marker-end={isConnectionHighlighted('soyuz-mcp', 'soyuz-sdf')
 				? 'url(#arrowhead-highlight)'
 				: 'url(#arrowhead)'}
 		/>
@@ -296,7 +353,7 @@
 				: 'url(#arrowhead)'}
 		/>
 
-		<!-- Row 1: soyuz-app -->
+		<!-- Row 1: soyuz-app, soyuz-mcp -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<g
 			class="crate cursor-pointer"
@@ -323,6 +380,35 @@
 				font-size="12"
 				font-weight="600"
 				fill={textColor}>soyuz-app</text
+			>
+		</g>
+
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<g
+			class="crate cursor-pointer"
+			class:hovered={hoveredCrate === 'soyuz-mcp'}
+			onmouseenter={() => (hoveredCrate = 'soyuz-mcp')}
+			onmouseleave={() => (hoveredCrate = null)}
+		>
+			<rect
+				x="620"
+				y="10"
+				width="140"
+				height="40"
+				rx="0"
+				fill={boxColor}
+				stroke={hoveredCrate === 'soyuz-mcp' ? highlightColor : lineColor}
+				stroke-width={hoveredCrate === 'soyuz-mcp' ? 3 : 2}
+			/>
+			<rect x="624" y="14" width="140" height="40" rx="0" fill={shadowColor} opacity="0.1" />
+			<text
+				x="690"
+				y="35"
+				text-anchor="middle"
+				font-family="JetBrains Mono, monospace"
+				font-size="12"
+				font-weight="600"
+				fill={textColor}>soyuz-mcp</text
 			>
 		</g>
 

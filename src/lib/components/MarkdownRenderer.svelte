@@ -1,11 +1,7 @@
 <script lang="ts" module>
 	import { Marked, Renderer } from 'marked';
 	import DOMPurify from 'isomorphic-dompurify';
-	import { allFunctions } from '$lib/apiManifest';
-
-	function escapeRegExp(value: string): string {
-		return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	}
+	import { highlightRhai } from '$lib/rhaiHighlight';
 
 	function escapeHtml(value: string): string {
 		return value
@@ -21,54 +17,6 @@
 			.trim()
 			.replace(/[^a-z0-9\s-]/g, '')
 			.replace(/\s/g, '-');
-	}
-
-	const builtinNames = [...allFunctions.map((fn) => fn.name), 'cos', 'sin'].sort(
-		(a, b) => b.length - a.length
-	);
-	const builtinPattern = new RegExp(`\\b(${builtinNames.map(escapeRegExp).join('|')})\\b`, 'g');
-
-	// Syntax highlighting for Rhai code (same as CodeBlock component)
-	function highlightRhai(source: string): string {
-		const tokens: Array<[string, string]> = [];
-		let tokenIndex = 0;
-
-		function addToken(match: string, className: string): string {
-			const placeholder = `\x00TKN${tokenIndex++}TKN\x00`;
-			const escaped = match.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-			tokens.push([placeholder, `<span class="${className}">${escaped}</span>`]);
-			return placeholder;
-		}
-
-		let result = source;
-
-		// 1. Extract comments first
-		result = result.replace(/(\/\/.*$)/gm, (match) => addToken(match, 'comment'));
-
-		// 2. Extract strings
-		result = result.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, (match) => addToken(match, 'string'));
-
-		// 3. Escape HTML in remaining code
-		result = result.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-		// 4. Keywords
-		result = result.replace(
-			/\b(let|if|else|for|while|loop|fn|return|true|false|in|break|continue|throw|try|catch)\b/g,
-			'<span class="keyword">$1</span>'
-		);
-
-		// 5. Builtins (Soyuz functions)
-		result = result.replace(builtinPattern, '<span class="builtin">$1</span>');
-
-		// 6. Numbers
-		result = result.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
-
-		// 7. Restore tokens
-		for (const [placeholder, html] of tokens) {
-			result = result.replace(placeholder, html);
-		}
-
-		return result;
 	}
 
 	// Single Marked instance, configured once when this module is first evaluated.

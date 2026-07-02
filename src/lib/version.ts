@@ -39,7 +39,7 @@ interface GitHubRelease {
 
 let cache: CachedVersion | null = null;
 
-const FALLBACK_VERSION = 'v0.7.0';
+const FALLBACK_VERSION = 'v0.7.1';
 const FALLBACK_RELEASE_URL = 'https://github.com/noahsabaj/soyuz/releases';
 
 export function resolveReleaseAsset(info: VersionInfo, filename: string): ReleaseAsset | null {
